@@ -3,7 +3,7 @@ import { Notifications } from 'expo';
 import { createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+import registerForPushNotificationsAsync from '../expo-api/registerForPushNotificationsAsync';
 
 const AppNavigator = createSwitchNavigator({
   // You could add another route here for authentication.
