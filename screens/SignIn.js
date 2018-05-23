@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Expo from 'expo';
+import PropTypes from 'prop-types';
 
 import {
   Text,
@@ -9,17 +10,15 @@ import {
   Button,
 } from 'react-native';
 
-import { withNavigation } from 'react-navigation';
-
 import { Auth } from "aws-amplify";
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/FormStyles';
 
 class SignIn extends Component {
-  // static navigationOptions = {
-  //   title: 'Sign In',
-  // };
+  static navigationOptions = {
+    title: 'Sign In',
+  };
 
   constructor(props) {
     super(props);
@@ -27,7 +26,7 @@ class SignIn extends Component {
     this.state = {
       email: '',
       password: '',
-      confirmationCode: '',
+      // confirmationCode: '',
       user: {}
     };
   }
@@ -99,4 +98,4 @@ class SignIn extends Component {
   }
 }
 
-export default withNavigation(SignIn);
+export default SignIn;

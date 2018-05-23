@@ -9,8 +9,8 @@ import config from './config';
 import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import RootNavigator from './navigation/RootNavigator';
-import HomeNavigator from './navigation/HomeNavigator';
-import HomeScreen from './screens/HomeScreen';
+import AuthNavigator from './navigation/AuthNavigator';
+import Home from './screens/Home';
 import SettingsScreen from './screens/SettingsScreen';
 
 Amplify.configure({
@@ -77,7 +77,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <HomeNavigator
+        <AuthNavigator
           screenProps={{
             authenticate: this.authenticate
           }}
@@ -95,7 +95,7 @@ export default class App extends React.Component {
       Font.loadAsync({
         // This is the font that we are using for our tab bar
         ...Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
+        // We include SpaceMono because we use it in Home.js. Feel free
         // to remove this if you are not using it in your app
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       }),
@@ -114,7 +114,7 @@ export default class App extends React.Component {
 }
 
 const AuthenticationNavigator = createStackNavigator({
-  Home: HomeScreen,
+  Home: Home,
 });
 
 const AppNavigator = createSwitchNavigator({

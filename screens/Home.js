@@ -12,7 +12,7 @@ import {
 
 import { WebBrowser } from 'expo';
 
-import SignInScreen from './SignInScreen';
+import SignIn from './SignIn';
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';

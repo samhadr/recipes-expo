@@ -12,12 +12,15 @@ import {
 
 import { Auth } from "aws-amplify";
 
-import SignIn from '../screens/SignInScreen';
+import SignIn from '../screens/SignIn';
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/FormStyles';
 
-class Login extends Component {
+class ConfirmSignUp extends Component {
+  static navigationOptions = {
+    title: 'Confirm Account',
+  };
   static propTypes = {
     email: PropTypes.string,
     signUpData: PropTypes.object
@@ -28,8 +31,8 @@ class Login extends Component {
 
     this.state = {
       confirmationCode: '',
-      showError: false,
-      formError: ''
+      showConfirmError: false,
+      confirmError: '',
     };
   }
 
@@ -44,12 +47,22 @@ class Login extends Component {
   }
 
   confirmSignUp = () => {
-    Auth.confirmSignUp(this.props.email, this.props.confirmationCode)
-    .then(data => console.log('confirmSignUp data = ', data))
-    .then(() => console.log('confirm sign up success'))
-    .then(() => console.log('currentSession = ', Auth.currentSession()))
-    .then(this.props.navigation.navigate('SignIn'))
-    .catch(err => console.log('confirm sign up ERROR: ', err));
+    const email = this.props.navigation.getParam('emailAddress', 'no email');
+    Auth.confirmSignUp(email, this.state.confirmationCode)
+    .then(
+      data => {
+        console.log('confirmSignUp data = ', data),
+        data === 'SUCCESS' ? this.props.navigation.navigate('SignIn') : null,
+        this.setState({ showConfirmError: false })
+      }
+    )
+    .catch(err => {
+      console.log(`confirm ERROR: ${err.message}`, err),
+      this.setState({
+        confirmError: err.message,
+        showConfirmError: true
+      })
+    });
   }
 
   render() {
@@ -58,28 +71,31 @@ class Login extends Component {
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Confirm your account.</Text>
-        <Text>Your account has been created! You were sent a confirmation code to the email associated with your new account.</Text>
-        <Text>Enter your confirmation code:</Text>
         <View style={styles.formBox}>
-          <TextInput
-            style={styles.textInput}
-            value={this.state.confirmationCode}
-            onChangeText={value => this.onChangeText('confirmationCode', value)}
-            placeholder="Confirmation Code"
-          />
-          <TouchableOpacity
-            type="submit"
-            style={styles.button}
-            onPress={this.confirmSignUp}
-            title="Confirm Sign In"
-            accessibilityLabel="Confirm sign up to create your account"
-          >
-            <Text style={styles.buttonText}>Confirm Sign Up</Text>
-          </TouchableOpacity>
+          <Text>Your account has been created! You were sent a confirmation code to the email associated with your new account.</Text>
+          <Text>Enter your confirmation code:</Text>
+          <View style={styles.formBox}>
+            <TextInput
+              style={styles.textInput}
+              value={this.state.confirmationCode}
+              onChangeText={value => this.onChangeText('confirmationCode', value)}
+              placeholder="Confirmation Code"
+            />
+            {this.state.showConfirmError ? <Text style={globalStyles.error}>{this.state.confirmError}</Text> : null}
+            <TouchableOpacity
+              type="submit"
+              style={styles.button}
+              onPress={this.confirmSignUp}
+              title="Confirm Sign In"
+              accessibilityLabel="Confirm sign up to create your account"
+            >
+              <Text style={styles.buttonText}>Confirm Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   }
 }
 
-export default Login;
+export default ConfirmSignUp;
