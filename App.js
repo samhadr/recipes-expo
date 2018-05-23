@@ -113,19 +113,6 @@ export default class App extends React.Component {
   };
 }
 
-const AuthenticationNavigator = createStackNavigator({
-  Home: Home,
-});
-
-const AppNavigator = createSwitchNavigator({
-  /* 
-   * Rather than being rendered by a screen component, the
-   * AuthenticationNavigator is a screen component
-   */
-  Auth: AuthenticationNavigator,
-  Settings: SettingsScreen,
-});
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

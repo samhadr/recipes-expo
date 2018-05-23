@@ -12,8 +12,6 @@ import {
 
 import { WebBrowser } from 'expo';
 
-import SignIn from './SignIn';
-
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
 import Colors from '../constants/Colors';
@@ -33,32 +31,7 @@ class Home extends Component {
     return (
       <View style={globalStyles.container}>
         <View style={styles.content}>
-          <View style={styles.div}>
-            <Text>Welcome to YouTube DJ!</Text>
-          </View>
-          {/* <View style={styles.div}>
-            <Text style={{textAlign: 'center'}}>To host a session, login to your YouTube account and create a new playlist:</Text>
-            <Button
-              title="Login to YouTube"
-              onPress={this.signInWithGoogleAsync}
-              style={styles.button}
-            />
-          </View> */}
-          <View style={styles.div}>
-            <Button
-              title="Sign Up"
-              onPress={() => navigate('SignUp')}
-              style={styles.button}
-            />
-          </View>
-          <View style={styles.div}>
-            <Text>Already have an account?</Text>
-            <Button
-              title="Sign In"
-              onPress={() => navigate('SignIn')}
-              style={styles.button}
-            />
-          </View>
+          <Text>You're In</Text>
         </View>
       </View>
     );
