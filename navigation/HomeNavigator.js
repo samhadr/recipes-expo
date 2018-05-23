@@ -2,8 +2,9 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 
 import HomeScreen from '../screens/HomeScreen';
-import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import ConfirmSignUp from '../screens/ConfirmSignUp';
+import SignInScreen from '../screens/SignInScreen';
 import MainTabNavigator from '../navigation/MainTabNavigator';
 
 import Colors from '../constants/Colors';
@@ -22,6 +23,13 @@ export default createStackNavigator(
       path: 'signup',
       navigationOptions: {
         title: 'Sign Up',
+      },
+    },
+    ConfirmSignUp: {
+      screen: ConfirmSignUp,
+      path: 'confirm-signup',
+      navigationOptions: {
+        title: 'Confirm Sign Up',
       },
     },
     SignIn: {

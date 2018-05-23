@@ -11,6 +11,8 @@ import {
 
 import { Auth } from "aws-amplify";
 
+import SignIn from '../screens/SignInScreen';
+
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/FormStyles';
 
@@ -22,11 +24,12 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      confirmationCode: '',
-      showError: false,
-      formError: '',
+      showSignUpError: false,
+      signUpError: '',
+      showConfirmError: false,
+      confirmError: '',
       signUpData: {},
-      // signUpSuccessMessage: ''
+      confirmationCode: '',
     };
   }
 
@@ -41,7 +44,7 @@ class Login extends Component {
   }
 
   signUp = () => {
-    const { email, password } = this.state;
+    const { email, password, signUpData } = this.state;
     Auth.signUp(email, password)
     .then(
       data => {
@@ -49,34 +52,58 @@ class Login extends Component {
         this.setState({ signUpData: data })
       },
       this.setState({
-        showError: false,
+        showSignUpError: false,
         // signUpSuccessMessage: 'Account created! Enter your confirmation code:'
       })
     )
     .catch(err => {
-      console.log(`sign up ERROR: ${err.message}`, err)
+      console.log(`sign up ERROR: ${err.message}`, err),
       this.setState({
-        formError: err.message,
-        showError: true
+        signUpError: err.message,
+        showSignUpError: true
       })
     });
+
+    // if (Object.keys(signUpData).length > 0) {
+    //   this.props.navigation.navigate('ConfirmSignUp');
+    //   console.log('navigated');
+    // }
   }
 
   confirmSignUp = () => {
     Auth.confirmSignUp(this.state.email, this.state.confirmationCode)
-    .then(data => console.log('confirmSignUp data = ', data))
-    .then(() => console.log('confirm sign up success'))
-    .then(() => console.log('currentSession = ', Auth.currentSession()))
-    .then(this.props.navigation.navigate('SignIn'))
-    .catch(err => console.log('confirm sign up ERROR: ', err));
+    .then(
+      data => {
+        console.log('confirmSignUp data = ', data),
+        data === 'SUCCESS' ? this.props.navigation.navigate('SignIn') : null
+      }
+    )
+    // .then(() => console.log('confirm sign up success'))
+    // .then(() => console.log('currentSession = ', Auth.currentSession()))
+    // .then(this.props.navigation.navigate('SignIn'))
+    .catch(err => {
+      console.log(`confirm ERROR: ${err.message}`, err),
+      this.setState({
+        confirmError: err.message,
+        showConfirmError: true
+      })
+    });
   }
 
   render() {
-    const { signUpData } = this.state;
+    const { email, signUpData } = this.state;
     const signUpSuccessMessage = Object.keys(signUpData).length > 0 ? 'Account created! Enter your confirmation code:' : null;
 
     return (
       <View style={globalStyles.container}>
+        {/* <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.props.navigation.navigate('ConfirmSignUp')}
+            title="Navigate"
+            accessibilityLabel="Navigate"
+          >
+          <Text style={styles.buttonText}>Navigate</Text>
+        </TouchableOpacity> */}
         <Text style={globalStyles.heading}>Sign up to create an account.</Text>
         <View style={styles.formBox}>
           <TextInput
@@ -97,7 +124,7 @@ class Login extends Component {
             secureTextEntry={true}
           />
           <Text style={styles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>
-          {this.state.showError ? <Text style={globalStyles.error}>{this.state.formError}</Text> : null}
+          {this.state.showSignUpError ? <Text style={globalStyles.error}>{this.state.signUpError}</Text> : null}
           <TouchableOpacity
             type="submit"
             style={styles.button}
@@ -108,24 +135,33 @@ class Login extends Component {
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-        <Text>{signUpSuccessMessage}</Text>
-        <View style={styles.formBox}>
-          <TextInput
-            style={styles.textInput}
-            value={this.state.confirmationCode}
-            onChangeText={value => this.onChangeText('confirmationCode', value)}
-            placeholder="Confirmation Code"
-          />
-          <TouchableOpacity
-            type="submit"
-            style={styles.button}
-            onPress={this.confirmSignUp}
-            title="Confirm Sign In"
-            accessibilityLabel="Confirm sign up to create your account"
-          >
-            <Text style={styles.buttonText}>Confirm Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+        {
+          Object.keys(signUpData).length > 0 ?
+          <View style={globalStyles.container}>
+            <Text style={globalStyles.heading}>Confirm your account.</Text>
+            <Text>Your account has been created! You were sent a confirmation code to the email associated with your new account.</Text>
+            <Text>Enter your confirmation code:</Text>
+            <View style={styles.formBox}>
+              <TextInput
+                style={styles.textInput}
+                value={this.state.confirmationCode}
+                onChangeText={value => this.onChangeText('confirmationCode', value)}
+                placeholder="Confirmation Code"
+              />
+              {this.state.showConfirmError ? <Text style={globalStyles.error}>{this.state.confirmError}</Text> : null}
+              <TouchableOpacity
+                type="submit"
+                style={styles.button}
+                onPress={this.confirmSignUp}
+                title="Confirm Sign In"
+                accessibilityLabel="Confirm sign up to create your account"
+              >
+                <Text style={styles.buttonText}>Confirm Sign Up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          : null
+        }
       </View>
     );
   }

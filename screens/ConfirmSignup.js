@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Expo from 'expo';
 
 import {
@@ -11,22 +12,24 @@ import {
 
 import { Auth } from "aws-amplify";
 
+import SignIn from '../screens/SignInScreen';
+
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/FormStyles';
 
 class Login extends Component {
+  static propTypes = {
+    email: PropTypes.string,
+    signUpData: PropTypes.object
+  }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      email: '',
-      password: '',
       confirmationCode: '',
       showError: false,
-      formError: '',
-      signUpData: {},
-      // signUpSuccessMessage: ''
+      formError: ''
     };
   }
 
@@ -40,30 +43,8 @@ class Login extends Component {
     });
   }
 
-  signUp = () => {
-    const { email, password } = this.state;
-    Auth.signUp(email, password)
-    .then(
-      data => {
-        console.log('signUp data = ', data),
-        this.setState({ signUpData: data })
-      },
-      this.setState({
-        showError: false,
-        // signUpSuccessMessage: 'Account created! Enter your confirmation code:'
-      })
-    )
-    .catch(err => {
-      console.log(`sign up ERROR: ${err.message}`, err)
-      this.setState({
-        formError: err.message,
-        showError: true
-      })
-    });
-  }
-
   confirmSignUp = () => {
-    Auth.confirmSignUp(this.state.email, this.state.confirmationCode)
+    Auth.confirmSignUp(this.props.email, this.props.confirmationCode)
     .then(data => console.log('confirmSignUp data = ', data))
     .then(() => console.log('confirm sign up success'))
     .then(() => console.log('currentSession = ', Auth.currentSession()))
@@ -72,43 +53,13 @@ class Login extends Component {
   }
 
   render() {
-    const { signUpData } = this.state;
-    const signUpSuccessMessage = Object.keys(signUpData).length > 0 ? 'Account created! Enter your confirmation code:' : null;
+    const { signUpData } = this.props;
 
     return (
       <View style={globalStyles.container}>
-        <Text style={globalStyles.heading}>Sign up to create an account.</Text>
-        <View style={styles.formBox}>
-          <TextInput
-            style={styles.textInput}
-            value={this.state.email}
-            onChangeText={value => this.onChangeText('email', value)}
-            placeholder="Email"
-            autoCapitalize="none"
-            autoFocus={true}
-            keyboardType="email-address"
-          />
-          <Text style={styles.inputHelper}>Your email will be your username.</Text>
-          <TextInput
-            style={styles.textInput}
-            value={this.state.password}
-            onChangeText={value => this.onChangeText('password', value)}
-            placeholder="Password"
-            secureTextEntry={true}
-          />
-          <Text style={styles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>
-          {this.state.showError ? <Text style={globalStyles.error}>{this.state.formError}</Text> : null}
-          <TouchableOpacity
-            type="submit"
-            style={styles.button}
-            onPress={this.signUp}
-            title="Sign In"
-            accessibilityLabel="Sign up to create an account"
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-        <Text>{signUpSuccessMessage}</Text>
+        <Text style={globalStyles.heading}>Confirm your account.</Text>
+        <Text>Your account has been created! You were sent a confirmation code to the email associated with your new account.</Text>
+        <Text>Enter your confirmation code:</Text>
         <View style={styles.formBox}>
           <TextInput
             style={styles.textInput}
