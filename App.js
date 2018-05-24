@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 
 // AWS API
@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import RootNavigator from './navigation/RootNavigator';
 import AuthNavigator from './navigation/AuthNavigator';
+import MainTabNavigator from './navigation/MainTabNavigator';
 import Home from './screens/Home';
 import SettingsScreen from './screens/SettingsScreen';
 
@@ -42,12 +43,18 @@ export default class App extends React.Component {
     super();
     this.state = {
       isLoadingComplete: false,
-      isAuthenticated: false
+      isAuthenticated: false,
+      currentUser: {}
     }
   }
 
   authenticate = (isAuthenticated) => {
     this.setState({ isAuthenticated });
+  }
+
+  user = (user) => {
+    const { isAuthenticated } = this.state;
+    isAuthenticated ? this.setState({ currentUser: user }) : null;
   }
 
   render() {
@@ -61,25 +68,25 @@ export default class App extends React.Component {
       );
     }
     if (this.state.isAuthenticated){
-      console.log('Auth: ', Auth);
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <RootNavigator
+          <MainTabNavigator
             screenProps={{
-              authenticate: this.authenticate
+              isAuthenticated: this.state.isAuthenticated,
+              user: this.state.currentUser
             }}
           />
         </View>
       );
     }
-    console.log('Auth: ', Auth);
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <AuthNavigator
           screenProps={{
-            authenticate: this.authenticate
+            authenticate: this.authenticate,
+            user: this.user
           }}
         />
       </View>

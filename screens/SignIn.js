@@ -26,6 +26,7 @@ class SignIn extends Component {
     this.state = {
       email: '',
       password: '',
+      showSignInError: false,
       // confirmationCode: '',
       user: {}
     };
@@ -49,7 +50,11 @@ class SignIn extends Component {
       console.log('sign in success', this.state.user);
     })
     .then(() => this.props.screenProps.authenticate(true))
-    .catch(err => console.log('sign in ERROR: ', err));
+    .then(() => this.props.screenProps.user(this.state.user))
+    .catch(err => {
+      console.log(`sign in ERROR: ${err.message}`, err),
+      this.setState({ showSignInError: true })
+    });
   }
 
   // confirmSignIn = () => {
@@ -82,7 +87,9 @@ class SignIn extends Component {
             onChangeText={value => this.onChangeText('password', value)}
             placeholder="Password"
             secureTextEntry={true}
+            onSubmitEditing={this.signIn}
           />
+          {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null}
           <TouchableOpacity
             type="submit"
             style={styles.button}

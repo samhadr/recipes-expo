@@ -4,16 +4,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import Home from '../screens/Home';
+import Recipes from '../screens/Recipes';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-const HomeStack = createStackNavigator({
-  Home: Home,
+const RecipesStack = createStackNavigator({
+  Recipes: Recipes,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+RecipesStack.navigationOptions = {
+  tabBarLabel: 'Recipes',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -55,7 +55,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
+  RecipesStack,
   LinksStack,
   SettingsStack,
 });
