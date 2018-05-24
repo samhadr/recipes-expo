@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   Button,
+  ListGroupItem
 } from 'react-native';
 
 import { WebBrowser } from 'expo';
@@ -33,7 +34,8 @@ class Recipes extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      recipesData: null
+      recipesData: {},
+      recipe: "{\"content\":\"test01 recipe\",\"attachment\":\"test01.jpg\"}"
     }
     this.getRecipes = this.getRecipes.bind(this);
   }
@@ -68,19 +70,14 @@ class Recipes extends Component {
   );
 
   renderRecipesList = () => {
-    const { searchResults: { items } } = this.state;
-    const keyExtractor = (item, index) => item.etag;
+    const { recipesData } = this.state;
 
-    if (items) {
-      const results = (
-        <View>
-          <FlatList
-            keyExtractor={keyExtractor}
-            data={items}
-            renderItem={this.renderRecipe}
-          />
+    if (recipesData) {
+      const results = recipesData.map(recipe => {
+        <View key={recipe.recipeId}>
+          <Text>{recipe.content}</Text>
         </View>
-      );
+      });
       return results;
     }
     return null;
@@ -90,23 +87,29 @@ class Recipes extends Component {
     return [{}].concat(recipes).map(
       (recipe, i) =>
         i !== 0
-          ? <ListGroupItem
+          ? <View
               key={recipe.recipeId}
-              href={`/recipes/${recipe.recipeId}`}
-              onClick={this.handleRecipeClick}
-              header={recipe.content.trim().split("\n")[0]}
             >
-              {"Created: " + new Date(recipe.createdAt).toLocaleString()}
-            </ListGroupItem>
-          : <ListGroupItem
+              <TouchableOpacity
+                // href={`/recipes/${recipe.recipeId}`}
+                onClick={this.handleRecipeClick}
+                title={recipe.content.trim().split("\n")[0]}
+              >
+                <Text>{recipe.content.trim().split("\n")[0]}</Text>
+              </TouchableOpacity>
+              <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
+            </View>
+          : <View
               key="new"
-              href="/recipes/new"
-              onClick={this.handleRecipeClick}
             >
-              <h4>
-                <b>{"\uFF0B"}</b> Create a new recipe
-              </h4>
-            </ListGroupItem>
+              <TouchableOpacity
+                // href="/recipes/new"
+                onClick={this.handleRecipeClick}
+                title="Create a new recipe"
+              >
+                <Text>{"\uFF0B"} Create a new recipe</Text>
+              </TouchableOpacity>
+            </View>
     );
   }
 
@@ -115,13 +118,40 @@ class Recipes extends Component {
     this.props.navigation.navigate('Recipe');
   }
 
+  submitRecipe = async event => {
+    event.preventDefault();
+  
+    if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
+      alert("Please pick a file smaller than 5MB");
+      return;
+    }
+  
+    this.setState({ isLoading: true });
+  
+    try {
+      await this.createRecipe({
+        content: this.state.recipe
+      });
+      this.props.navigation.navigate('Recipes');
+    } catch (e) {
+      console.log(e);
+      this.setState({ isLoading: false });
+    }
+  }
+
+  createRecipe = (recipe) => {
+    return API.post('recipes', '/recipes', {
+      body: recipe
+    });
+  }
+
   render() {
     const { screenProps } = this.props
     const { recipesData } = this.state;
     console.log('recipesData: ', recipesData);
     const userObj = screenProps.user;
     const userEmail = Object.keys(userObj).length > 0 ? userObj.signInUserSession.idToken.payload.email : null;
-    // const showRecipes = Object.keys(recipes).length > 0 ? this.renderRecipesList(recipes) : null;
+    const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (
       <View style={globalStyles.container}>
@@ -134,9 +164,18 @@ class Recipes extends Component {
             title="Get Recipes"
             accessibilityLabel="Get Recipes"
           >
-            <Text >Get Recipes</Text>
+            <Text>Get Recipes</Text>
           </TouchableOpacity>
-          {/* {showRecipes} */}
+          <TouchableOpacity
+            type="submit"
+            // style={searchStyles.button}
+            onPress={this.submitRecipe}
+            title="Submit Recipe"
+            accessibilityLabel="Submit Recipe"
+          >
+            <Text>Submit Recipe</Text>
+          </TouchableOpacity>
+          {showRecipes}
         </View>
       </View>
     );
