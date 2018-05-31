@@ -20,7 +20,7 @@ class SignOut extends Component {
   signOut = () => {
     Auth.signOut()
     .then(data => console.log(data))
-    .then(() => this.props.screenProps.authenticate(false))
+    .then(() => this.props.authenticate(false))
     .then(this.props.navigation.navigate('SignIn'))
     .catch(err => {
       console.log(`sign out ERROR: ${err.message}`, err)

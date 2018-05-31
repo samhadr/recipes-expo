@@ -62,7 +62,7 @@ export default class App extends React.Component {
   render() {
     const { currentUser } = this.state;
     const userEmail = Object.keys(currentUser).length > 0 ? currentUser.signInUserSession.idToken.payload.email : null;
-    console.log('isAuthenticated: ', this.state.isAuthenticated);
+    console.log('App isAuthenticated: ', this.state.isAuthenticated);
 
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (

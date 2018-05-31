@@ -46,7 +46,7 @@ class SignIn extends Component {
     const { email, password } = this.state;
     Auth.signIn(email, password)
     .then(user => {
-      // this.setState({ user });
+      this.setState({ user });
       console.log('sign in success', this.state.user);
     })
     .then(() => this.props.screenProps.authenticate(true))

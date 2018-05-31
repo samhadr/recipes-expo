@@ -6,7 +6,8 @@ import {
   Text,
   View,
   ScrollView,
-  Button
+  Button,
+  TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -26,6 +27,7 @@ import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 import ConfirmSignUp from '../screens/ConfirmSignUp';
+import DrawerMenu from '../components/DrawerMenu';
 
 export const Tabs = createBottomTabNavigator(
   {
@@ -70,8 +72,9 @@ export const Drawer = createDrawerNavigator(
   {
     contentComponent: props => 
       <ScrollView>
-        <DrawerItems {...props} />
-        <SignOut {...props} />
+        {/* <DrawerItems {...props} /> */}
+        <DrawerMenu {...props} />
+        {/* <SignOut {...props} /> */}
       </ScrollView>
   },
 );
@@ -80,18 +83,20 @@ export default MainNavigator = createStackNavigator({
   Main: { screen: Drawer },
 }, {
   initialRouteName: 'Main',
-  // navigationOptions: ({ navigation }) => ({
-	// 	headerLeft: (
-  //     <Button
-  //       title="Open Drawer"
-  //       // style={styles.button}
-  //       onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-  //     />
-  //   ),
-  // }),
-  navigationOptions: props => ({
-    headerRight: (
-      <SignOut {...props} />
+  navigationOptions: ({ navigation }) => ({
+		headerLeft: (
+      <TouchableOpacity
+        // title="Open Drawer"
+        // style={styles.button}
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+      >
+        <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+      </TouchableOpacity>
     ),
   }),
+  // navigationOptions: props => ({
+  //   headerRight: (
+  //     <SignOut {...props} />
+  //   ),
+  // }),
 });

@@ -50,7 +50,7 @@ class Recipes extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      // isAuthenticated: this.props.isAuthenticated,
+      userEmail: this.props.screenProps.userEmail,
       recipesData: {},
       recipe: "{\"content\":\"test01 recipe\",\"attachment\":\"test01.jpg\"}"
     }
@@ -165,11 +165,7 @@ class Recipes extends Component {
   render() {
     const { screenProps } = this.props
     const { recipesData } = this.state;
-    // console.log('isAuthenticated: ', screenProps.isAuthenticated);
-    console.log('userEmail: ', this.state.userEmail);
     console.log('recipesData: ', recipesData);
-    // const userObj = screenProps.userEmail;
-    // const authenticate = screenProps.authenticate !== null ? screenProps.authenticate : null;
     const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
@@ -184,7 +180,6 @@ class Recipes extends Component {
           <Text>You're In {userEmail}</Text>
           <TouchableOpacity
             type="submit"
-            // style={searchStyles.button}
             onPress={this.getRecipes}
             title="Get Recipes"
             accessibilityLabel="Get Recipes"
@@ -193,7 +188,6 @@ class Recipes extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             type="submit"
-            // style={searchStyles.button}
             onPress={this.submitRecipe}
             title="Submit Recipe"
             accessibilityLabel="Submit Recipe"
