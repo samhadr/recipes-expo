@@ -19,20 +19,13 @@ import {
   DrawerActions
 } from 'react-navigation';
 
-// StackNavigator screens
-import Welcome from '../screens/Welcome';
 import SignOut from '../components/SignOut';
 
-// TabNavigator screens
 import Recipes from '../screens/Recipes';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-// Plain old component
 import ConfirmSignUp from '../screens/ConfirmSignUp';
-
-import userSignOut from '../utilities/helpers';
-import DrawerMenu from '../components/DrawerMenu';
 
 export const Tabs = createBottomTabNavigator(
   {
@@ -72,38 +65,33 @@ export const Tabs = createBottomTabNavigator(
 export const Drawer = createDrawerNavigator(
   {
     Tabs: { screen: Tabs },
-    SignOut: { screen: SignOut },
     Confirm: { screen: ConfirmSignUp },
   },
   {
     contentComponent: props => 
       <ScrollView>
         <DrawerItems {...props} />
-        <DrawerMenu />
+        <SignOut {...props} />
       </ScrollView>
   },
 );
 
-const MenuButton = (
-	<Button
-    title="Open Drawer"
-    // style={styles.button}
-    onPress={() => navigation.toggleDrawer()}
-  />
-);
-
 export default MainNavigator = createStackNavigator({
   Main: { screen: Drawer },
-  // SignOut: { screen: SignOut },
 }, {
   initialRouteName: 'Main',
-  navigationOptions: ({ navigation }) => ({
-		headerLeft: (
-      <Button
-        title="Open Drawer"
-        // style={styles.button}
-        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-      />
+  // navigationOptions: ({ navigation }) => ({
+	// 	headerLeft: (
+  //     <Button
+  //       title="Open Drawer"
+  //       // style={styles.button}
+  //       onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+  //     />
+  //   ),
+  // }),
+  navigationOptions: props => ({
+    headerRight: (
+      <SignOut {...props} />
     ),
-	}),
+  }),
 });

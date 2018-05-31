@@ -165,7 +165,7 @@ class Recipes extends Component {
   render() {
     const { screenProps } = this.props
     const { recipesData } = this.state;
-    console.log('isAuthenticated: ', screenProps.isAuthenticated);
+    // console.log('isAuthenticated: ', screenProps.isAuthenticated);
     console.log('userEmail: ', this.state.userEmail);
     console.log('recipesData: ', recipesData);
     // const userObj = screenProps.userEmail;
