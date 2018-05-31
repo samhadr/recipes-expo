@@ -11,6 +11,8 @@ import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 import RootNavigator from './navigation/RootNavigator';
 import AuthNavigator from './navigation/AuthNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
+import MainNavigator from './navigation/Navigators';
+import Drawer from './navigation/Navigators';
 import Home from './screens/Home';
 import SettingsScreen from './screens/SettingsScreen';
 
@@ -58,6 +60,9 @@ export default class App extends React.Component {
   }
 
   render() {
+    const { currentUser } = this.state;
+    const userEmail = Object.keys(currentUser).length > 0 ? currentUser.signInUserSession.idToken.payload.email : null;
+
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
@@ -71,10 +76,11 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <MainTabNavigator
+          <MainNavigator
             screenProps={{
+              authenticate: this.authenticate,
               isAuthenticated: this.state.isAuthenticated,
-              user: this.state.currentUser
+              userEmail: userEmail
             }}
           />
         </View>

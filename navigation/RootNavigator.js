@@ -6,8 +6,13 @@ import AuthNavigator from './AuthNavigator';
 import MainTabNavigator from './MainTabNavigator';
 import registerForPushNotificationsAsync from '../expo-api/registerForPushNotificationsAsync';
 
+import SignOut from '../components/SignOut';
+
 const AppNavigator = createSwitchNavigator({
-  Main: MainTabNavigator,
+  // Main: MainTabNavigator,
+  SignOut: {
+    screen: SignOut,
+  },
 });
 
 export default class RootNavigator extends React.Component {

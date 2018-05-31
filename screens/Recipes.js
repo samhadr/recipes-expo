@@ -16,16 +16,32 @@ import { WebBrowser } from 'expo';
 
 import { API } from "aws-amplify";
 
+import SignOut from '../components/SignOut';
+
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
 import Colors from '../constants/Colors';
 
+import userSignOut from '../utilities/helpers';
+
 class Recipes extends Component {
   static navigationOptions = {
-    title: 'Recipes',
+    headerTitle: 'Recipes',
+    headerLeft: (
+      <Button
+        title="Open Drawer"
+        style={styles.button}
+        onPress={() => this.props.navigation.toggleDrawer()}
+      />
+    ),
+    headerRight: (
+      // 
+      <SignOut />
+    ),
   };
 
   static propTypes = {
+    authenticate: PropTypes.func,
     isAuthenticated: PropTypes.bool,
     user: PropTypes.object
   }
@@ -34,6 +50,7 @@ class Recipes extends Component {
     super(props);
     this.state = {
       isLoading: true,
+      // isAuthenticated: this.props.isAuthenticated,
       recipesData: {},
       recipe: "{\"content\":\"test01 recipe\",\"attachment\":\"test01.jpg\"}"
     }
@@ -148,14 +165,22 @@ class Recipes extends Component {
   render() {
     const { screenProps } = this.props
     const { recipesData } = this.state;
+    console.log('isAuthenticated: ', screenProps.isAuthenticated);
+    console.log('userEmail: ', this.state.userEmail);
     console.log('recipesData: ', recipesData);
-    const userObj = screenProps.user;
-    const userEmail = Object.keys(userObj).length > 0 ? userObj.signInUserSession.idToken.payload.email : null;
+    // const userObj = screenProps.userEmail;
+    // const authenticate = screenProps.authenticate !== null ? screenProps.authenticate : null;
+    const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (
       <View style={globalStyles.container}>
         <View style={styles.content}>
+          <Button
+            title="Open Drawer"
+            style={styles.button}
+            onPress={() => this.props.navigation.toggleDrawer()}
+          />
           <Text>You're In {userEmail}</Text>
           <TouchableOpacity
             type="submit"
