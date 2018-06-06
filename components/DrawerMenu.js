@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {
-  ScrollView,
-  SafeAreaView,
-  Button,
-  Text
+  Platform,
+  View,
+  Text,
 } from 'react-native';
 
-import { Auth } from 'aws-amplify';
+import { Ionicons } from '@expo/vector-icons';
 
-import Stack from '../navigation/Navigators';
 import SignOut from './SignOut';
+
+import globalStyles from '../styles/GlobalStyles';
+import drawerStyles from '../styles/DrawerStyles';
 
 class DrawerMenu extends Component {
 
@@ -19,12 +19,13 @@ class DrawerMenu extends Component {
     console.log('DrawerMenu userEmail: ', userEmail);
 
     return (
-      <ScrollView>
-        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-          <Text>Welcome {userEmail}</Text>
-          <SignOut authenticate={this.props.screenProps.authenticate} />
-        </SafeAreaView>
-      </ScrollView>
+      <View style={drawerStyles.drawer}>
+        <View style={drawerStyles.user}>
+          <Ionicons name={Platform.OS === 'ios' ? `ios-contact` : 'md-contact'} size={35} color="red" style={globalStyles.inlineIcon} />
+          <Text>{userEmail}</Text>
+        </View>
+        <SignOut authenticate={this.props.screenProps.authenticate} />
+      </View>
     );
   }
 

@@ -45,7 +45,7 @@ export default class App extends React.Component {
     super();
     this.state = {
       isLoadingComplete: false,
-      isAuthenticated: false,
+      isAuthenticated: true,
       currentUser: {}
     }
   }

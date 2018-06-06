@@ -1,43 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Button,
-  ListGroupItem
 } from 'react-native';
 
 import { WebBrowser } from 'expo';
 
 import { API } from "aws-amplify";
 
-import SignOut from '../components/SignOut';
-
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
-import Colors from '../constants/Colors';
-
-import userSignOut from '../utilities/helpers';
 
 class Recipes extends Component {
   static navigationOptions = {
-    headerTitle: 'Recipes',
-    headerLeft: (
-      <Button
-        title="Open Drawer"
-        style={styles.button}
-        onPress={() => this.props.navigation.toggleDrawer()}
-      />
-    ),
-    headerRight: (
-      // 
-      <SignOut />
-    ),
+    title: 'Recipes',
   };
 
   static propTypes = {
@@ -55,6 +33,10 @@ class Recipes extends Component {
       recipe: "{\"content\":\"test01 recipe\",\"attachment\":\"test01.jpg\"}"
     }
     this.getRecipes = this.getRecipes.bind(this);
+  }
+
+  componentDidMount() {
+    this.getRecipes();
   }
 
   async getRecipes() {
@@ -114,7 +96,7 @@ class Recipes extends Component {
               >
                 <Text>{recipe.content.trim().split("\n")[0]}</Text>
               </TouchableOpacity>
-              <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
+              {/* <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text> */}
             </View>
           : <View
               key="new"
@@ -163,21 +145,15 @@ class Recipes extends Component {
   }
 
   render() {
-    const { screenProps } = this.props
+    // const { screenProps } = this.props
     const { recipesData } = this.state;
     console.log('recipesData: ', recipesData);
-    const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
+    // const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (
       <View style={globalStyles.container}>
         <View style={styles.content}>
-          <Button
-            title="Open Drawer"
-            style={styles.button}
-            onPress={() => this.props.navigation.toggleDrawer()}
-          />
-          <Text>You're In {userEmail}</Text>
           <TouchableOpacity
             type="submit"
             onPress={this.getRecipes}

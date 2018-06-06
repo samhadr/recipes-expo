@@ -1,14 +1,11 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Platform,
-  StyleSheet,
-  Text,
-  View,
   ScrollView,
-  Button,
   TouchableOpacity
 } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 
 // Navigators
@@ -20,18 +17,70 @@ import {
   DrawerActions
 } from 'react-navigation';
 
-import SignOut from '../components/SignOut';
 
 import Recipes from '../screens/Recipes';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-import ConfirmSignUp from '../screens/ConfirmSignUp';
 import DrawerMenu from '../components/DrawerMenu';
+
+export const RecipesStack = createStackNavigator(
+  {
+    Recipes: {
+      screen: Recipes,
+    }
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      // initialRouteName: 'SecondScreen',
+      // headerMode: 'screen',
+      headerStyle: {
+        paddingRight: 10,
+        paddingLeft: 10,
+      },
+      headerTitle: 'Recipes',
+      drawerLabel: 'Recipes',
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+        </TouchableOpacity>
+      ),
+    }),
+  }
+);
+
+export const LinksStack = createStackNavigator(
+  {
+    Links: {
+      screen: LinksScreen,
+    }
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      // initialRouteName: 'SecondScreen',
+      // headerMode: 'screen',
+      headerStyle: {
+        paddingRight: 10,
+        paddingLeft: 10,
+      },
+      headerTitle: 'Links',
+      drawerLabel: 'Links',
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+        </TouchableOpacity>
+      ),
+    }),
+  }
+);
 
 export const Tabs = createBottomTabNavigator(
   {
-    Recipes: { screen: Recipes },
+    Recipes: { screen: RecipesStack },
     Links: { screen: LinksScreen },
     Settings: { screen: SettingsScreen },
   },
@@ -66,37 +115,25 @@ export const Tabs = createBottomTabNavigator(
 
 export const Drawer = createDrawerNavigator(
   {
-    Tabs: { screen: Tabs },
-    Confirm: { screen: ConfirmSignUp },
+    Recipes: { screen: RecipesStack },
+    Links: { screen: LinksStack },
   },
   {
+    drawerWidth: 250,
     contentComponent: props => 
       <ScrollView>
-        {/* <DrawerItems {...props} /> */}
         <DrawerMenu {...props} />
-        {/* <SignOut {...props} /> */}
+        <DrawerItems {...props} />
       </ScrollView>
   },
 );
 
-export default MainNavigator = createStackNavigator({
-  Main: { screen: Drawer },
-}, {
-  initialRouteName: 'Main',
-  navigationOptions: ({ navigation }) => ({
-		headerLeft: (
-      <TouchableOpacity
-        // title="Open Drawer"
-        // style={styles.button}
-        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-      >
-        <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
-      </TouchableOpacity>
-    ),
-  }),
-  // navigationOptions: props => ({
-  //   headerRight: (
-  //     <SignOut {...props} />
-  //   ),
-  // }),
-});
+export default MainNavigator = createStackNavigator(
+  {
+    Main: { screen: Drawer },
+  },
+  {
+    initialRouteName: 'Main',
+    headerMode: 'none',
+  }
+);
