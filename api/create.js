@@ -19,7 +19,10 @@ export async function main(event, context, callback) {
     Item: {
       userId: event.requestContext.identity.cognitoIdentityId,
       recipeId: uuid.v1(),
-      content: data.content,
+      // content: data.content,
+      title: data.title,
+      ingredients: data.ingredients,
+      method: data.method,
       attachment: data.attachment,
       createdAt: Date.now()
     }

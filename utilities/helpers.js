@@ -11,4 +11,10 @@ const userSignOut = () => {
   });
 }
 
+export const onChangeText = (key, value) => {
+  this.setState({
+    [key]: value
+  });
+}
+
 export default userSignOut;

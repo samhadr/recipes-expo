@@ -12,7 +12,7 @@ import RootNavigator from './navigation/RootNavigator';
 import AuthNavigator from './navigation/AuthNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import MainNavigator from './navigation/Navigators';
-import Drawer from './navigation/Navigators';
+import RecipesStack from './navigation/Navigators';
 import Home from './screens/Home';
 import SettingsScreen from './screens/SettingsScreen';
 
@@ -45,7 +45,7 @@ export default class App extends React.Component {
     super();
     this.state = {
       isLoadingComplete: false,
-      isAuthenticated: true,
+      isAuthenticated: false,
       currentUser: {}
     }
   }

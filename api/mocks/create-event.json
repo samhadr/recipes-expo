@@ -1,5 +1,5 @@
 {
-  "body": "{\"content\":\"hello world\",\"attachment\":\"hello.jpg\"}",
+  "body": "{\"title\":\"Recipe Title 01\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"method\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"hello.jpg\"}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "USER-SUB-1234"

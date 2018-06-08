@@ -20,7 +20,10 @@ import {
 
 import Recipes from '../screens/Recipes';
 import LinksScreen from '../screens/LinksScreen';
+import CreateRecipe from '../screens/CreateRecipe';
 import SettingsScreen from '../screens/SettingsScreen';
+
+import Recipe from '../screens/Recipe';
 
 import DrawerMenu from '../components/DrawerMenu';
 
@@ -28,19 +31,47 @@ export const RecipesStack = createStackNavigator(
   {
     Recipes: {
       screen: Recipes,
-    }
+    },
+    Recipe: {
+      screen: Recipe,
+    },
   },
   {
     navigationOptions: ({ navigation }) => ({
-      // initialRouteName: 'SecondScreen',
+      // initialRouteName: 'Recipes',
       // headerMode: 'screen',
       headerStyle: {
         paddingRight: 10,
         paddingLeft: 10,
       },
       headerTitle: 'Recipes',
-      drawerLabel: 'Recipes',
-      headerLeft: (
+      // drawerLabel: 'Recipes',
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+        </TouchableOpacity>
+      ),
+    }),
+  }
+);
+
+export const RecipeStack = createStackNavigator(
+  {
+    Recipe: {
+      screen: Recipe,
+    },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        paddingRight: 10,
+        paddingLeft: 10,
+      },
+      headerTitle: 'Recipe',
+      // drawerLabel: 'Recipes',
+      headerRight: (
         <TouchableOpacity
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
@@ -67,7 +98,34 @@ export const LinksStack = createStackNavigator(
       },
       headerTitle: 'Links',
       drawerLabel: 'Links',
-      headerLeft: (
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        >
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+        </TouchableOpacity>
+      ),
+    }),
+  }
+);
+
+export const CreateStack = createStackNavigator(
+  {
+    Create: {
+      screen: CreateRecipe,
+    }
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      // initialRouteName: 'SecondScreen',
+      // headerMode: 'screen',
+      headerStyle: {
+        paddingRight: 10,
+        paddingLeft: 10,
+      },
+      headerTitle: 'Links',
+      drawerLabel: 'Links',
+      headerRight: (
         <TouchableOpacity
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
@@ -117,9 +175,11 @@ export const Drawer = createDrawerNavigator(
   {
     Recipes: { screen: RecipesStack },
     Links: { screen: LinksStack },
+    Create: { screen: CreateStack },
   },
   {
     drawerWidth: 250,
+    drawerPosition: 'right',
     contentComponent: props => 
       <ScrollView>
         <DrawerMenu {...props} />
