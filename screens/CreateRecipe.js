@@ -4,10 +4,16 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput
+  TextInput,
+  CameraRoll,
+  Button,
+  ScrollView,
+  Image
 } from 'react-native';
 
 import { API } from 'aws-amplify';
+import config from '../config';
+import { s3Upload } from '../libs/awsLib';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -25,14 +31,20 @@ class CreateRecipe extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       isLoading: true,
       title: '',
       ingredients: '',
       instructions: '',
-      attachment: '',
-      isCreating: false
+      // attachment: '',
+      isCreating: false,
+      showPhotos: false,
+      photos: []
     }
+
+    this.file = null;
+
     this.onChangeText = this.onChangeText.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
   }
@@ -46,19 +58,23 @@ class CreateRecipe extends Component {
   async handleCreate() {
     console.log('handle create');
   
-    // if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-    //   alert("Please pick a file smaller than 5MB");
-    //   return;
-    // }
+    if (this.file && this.file.size > config.s3.MAX_FILE_SIZE) {
+      alert("Please pick a file smaller than 5MB");
+      return;
+    }
   
     this.setState({ isCreating: true });
   
     try {
+      const attachment = this.file
+        ? await s3Upload(this.file)
+        : null;
+      
       await this.createRecipe({
         title: this.state.title,
         ingredients: this.state.ingredients,
         instructions: this.state.instructions,
-        attachment: this.state.attachment
+        attachment
       });
       this.props.navigation.goBack();
     } catch (e) {
@@ -73,12 +89,39 @@ class CreateRecipe extends Component {
     });
   }
 
+  handleFileChange = event => {
+    this.file = event.target.files[0];
+  }
+
+  handleImageButton = () => {
+    CameraRoll.getPhotos({
+        first: 20,
+        assetType: 'Photos',
+      })
+      .then(r => {
+        this.setState({
+          photos: r.edges,
+          showPhotos: true
+        });
+      })
+      .catch((err) => {
+          console.log('image error: ', err);
+          this.setState({ showPhotos: false });
+      });
+    };
+
+  selectImage = (p) => {
+    this.setState({
+      // attachment: image.uri,
+      showPhotos: false
+    }),
+    this.file = p;
+    console.log('p: ', p);
+  }
+
   render() {
-    // const { screenProps } = this.props
-    const { recipesData } = this.state;
-    console.log('recipesData: ', recipesData);
-    // const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
-    // const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
+    const { showPhotos } = this.state;
+    console.log('showPhotos: ', showPhotos);
 
     return (
       <View style={globalStyles.container}>
@@ -105,12 +148,50 @@ class CreateRecipe extends Component {
             onChangeText={value => this.onChangeText('instructions', value)}
             placeholder="Instructions"
           />
-          <TextInput
+          {
+            this.file !== null
+            ? <Image
+                style={{
+                  width: 300,
+                  height: 100,
+                }}
+                source={this.file}
+              />
+            : null
+          }
+          {/* <TextInput
             style={formStyles.textInput}
             value={this.state.attachment}
             onChangeText={value => this.onChangeText('attachment', value)}
             placeholder="Add Attachment"
-          />
+          /> */}
+          <Button title="Load Images" onPress={this.handleImageButton} />
+          <ScrollView>
+            {!showPhotos
+              ? null
+              : this.state.photos.map((p, i) => {
+                return (
+                  <TouchableOpacity
+                    // type="submit"
+                    // style={formStyles.button}
+                    key={i}
+                    onPress={() => this.selectImage(p)}
+                    title="Select Image"
+                    accessibilityLabel="Select Image"
+                  >
+                    <Image
+                      // key={i}
+                      style={{
+                        width: 300,
+                        height: 100,
+                      }}
+                      source={{ uri: p.node.image.uri }}
+                    />
+                  </TouchableOpacity>
+                );
+              })
+            }
+          </ScrollView>
           {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
           <TouchableOpacity
             type="submit"

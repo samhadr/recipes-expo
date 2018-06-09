@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ScrollView
+  ScrollView,
+  Image
 } from 'react-native';
 
 import { WebBrowser } from 'expo';
@@ -78,6 +79,13 @@ class Recipes extends Component {
               key={recipe.recipeId}
               style={recipesStyles.recipe}
             >
+              {/* <Image
+                style={{
+                  width: 300,
+                  height: 100,
+                }}
+                source={recipe.attachment.uri}
+              /> */}
               <TouchableOpacity
                 onPress={this.handleRecipeClick.bind(this, recipe)}
                 title={recipe.title}
@@ -85,6 +93,7 @@ class Recipes extends Component {
               >
                 <Text>{recipe.title}</Text>
                 <Text>{recipe.recipeId}</Text>
+                {/* <Text>{recipe.attachment}</Text> */}
               </TouchableOpacity>
               <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
             </View>
