@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.red,
     height: 30,
+    marginBottom: 10,
   },
   buttonText: {
     color: '#fff',

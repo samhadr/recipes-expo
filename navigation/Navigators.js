@@ -19,11 +19,10 @@ import {
 
 
 import Recipes from '../screens/Recipes';
-import LinksScreen from '../screens/LinksScreen';
-import CreateRecipe from '../screens/CreateRecipe';
-import SettingsScreen from '../screens/SettingsScreen';
-
 import Recipe from '../screens/Recipe';
+import CreateRecipe from '../screens/CreateRecipe';
+import LinksScreen from '../screens/LinksScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 import DrawerMenu from '../components/DrawerMenu';
 
@@ -34,6 +33,9 @@ export const RecipesStack = createStackNavigator(
     },
     Recipe: {
       screen: Recipe,
+    },
+    CreateRecipe: {
+      screen: CreateRecipe,
     },
   },
   {

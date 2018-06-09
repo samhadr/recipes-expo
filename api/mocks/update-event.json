@@ -1,11 +1,11 @@
 {
-  "body": "{\"content\":\"new world\",\"attachment\":\"new.jpg\"}",
+  "body": "{\"title\":\"New Recipe Title 02\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"instructions\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"new.jpg\"}",
   "pathParameters": {
-    "id": "8adb06f0-5d10-11e8-be28-11eb76e0e4e6"
+    "id": "226d0200-6a74-11e8-a874-ffcddc46ecc4"
   },
   "requestContext": {
     "identity": {
-      "cognitoIdentityId": "USER-SUB-1234"
+      "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
     }
   }
 }

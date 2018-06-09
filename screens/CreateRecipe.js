@@ -9,8 +9,6 @@ import {
 
 import { API } from 'aws-amplify';
 
-import { onChangeText } from '../utilities/helpers';
-
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
 
@@ -29,11 +27,14 @@ class CreateRecipe extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      recipeTitle: '',
-      ingredients: [],
-      method: '',
+      title: '',
+      ingredients: '',
+      instructions: '',
+      attachment: '',
+      isCreating: false
     }
     this.onChangeText = this.onChangeText.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
   }
 
   onChangeText = (key, value) => {
@@ -42,24 +43,27 @@ class CreateRecipe extends Component {
     });
   }
 
-  submitRecipe = async event => {
-    event.preventDefault();
+  async handleCreate() {
+    console.log('handle create');
   
-    if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-      alert("Please pick a file smaller than 5MB");
-      return;
-    }
+    // if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
+    //   alert("Please pick a file smaller than 5MB");
+    //   return;
+    // }
   
-    this.setState({ isLoading: true });
+    this.setState({ isCreating: true });
   
     try {
       await this.createRecipe({
-        content: this.state.recipe
+        title: this.state.title,
+        ingredients: this.state.ingredients,
+        instructions: this.state.instructions,
+        attachment: this.state.attachment
       });
-      this.props.navigation.navigate('Recipes');
+      this.props.navigation.goBack();
     } catch (e) {
       console.log(e);
-      this.setState({ isLoading: false });
+      this.setState({ isCreating: false });
     }
   }
 
@@ -82,30 +86,36 @@ class CreateRecipe extends Component {
         <View style={formStyles.formBox}>
           <TextInput
             style={formStyles.textInput}
-            value={this.state.recipeTitle}
-            onChangeText={value => this.onChangeText('recipeTitle', value)}
+            value={this.state.title}
+            onChangeText={value => this.onChangeText('title', value)}
             placeholder="Recipe Title"
             autoFocus={true}
           />
           <TextInput
             style={formStyles.textInput}
-            value={this.state.ingredients[0]}
-            onChangeText={value => this.onChangeText('ingredients[0]', value)}
+            value={this.state.ingredients}
+            onChangeText={value => this.onChangeText('ingredients', value)}
             placeholder="Add Ingredient"
           />
           <TextInput
             style={formStyles.textInput}
             multiline
             numberOfLines={5}
-            value={this.state.method}
-            onChangeText={value => this.onChangeText('method', value)}
-            placeholder="Method"
+            value={this.state.instructions}
+            onChangeText={value => this.onChangeText('instructions', value)}
+            placeholder="Instructions"
+          />
+          <TextInput
+            style={formStyles.textInput}
+            value={this.state.attachment}
+            onChangeText={value => this.onChangeText('attachment', value)}
+            placeholder="Add Attachment"
           />
           {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
           <TouchableOpacity
             type="submit"
             style={formStyles.button}
-            onPress={this.submitRecipe}
+            onPress={this.handleCreate}
             title="Create Recipe"
             accessibilityLabel="Create Recipe"
           >

@@ -35,22 +35,30 @@ class Recipes extends Component {
       isLoading: true,
       userEmail: this.props.screenProps.userEmail,
       recipesData: {},
-      recipe: "{\"title\":\"Recipe Title 01\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"method\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"hello.jpg\"}"
+      recipe: "{\"title\":\"Recipe Title 01\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"instructions\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"hello.jpg\"}"
     }
     this.getRecipes = this.getRecipes.bind(this);
   }
 
+  // Update on navigating back from Recipe
+  willFocus = this.props.navigation.addListener(
+    'willFocus',
+    payload => {
+      this.handleRecipes();
+    }
+  );
+
   componentDidMount() {
-    this.getRecipes();
+    this.handleRecipes();
   }
 
-  async getRecipes() {
-    // if (!this.props.isAuthenticated) {
-    //   return;
-    // }
+  async handleRecipes() {
+    if (!this.props.screenProps.isAuthenticated) {
+      return;
+    }
   
     try {
-      const recipesData = await this.recipes();
+      const recipesData = await this.getRecipes();
       this.setState({ recipesData });
     } catch (e) {
       console.log('recipesData error: ', e);
@@ -59,33 +67,9 @@ class Recipes extends Component {
     this.setState({ isLoading: false });
   }
   
-  recipes() {
+  getRecipes() {
     return API.get('recipes', '/recipes');
   }
-
-  // renderRecipe = ({item}) => (
-  //   <SearchResult
-  //     key={item.id.videoId}
-  //     videoId={item.id.videoId}
-  //     videoImgSrc={item.snippet.thumbnails.default.url}
-  //     videoTitle={item.snippet.title}
-  //     addToPlaylist={this.addToPlaylist}
-  //   />
-  // );
-
-  // renderRecipesList = () => {
-  //   const { recipesData } = this.state;
-
-  //   if (recipesData) {
-  //     const results = recipesData.map(recipe => {
-  //       <View key={recipe.recipeId}>
-  //         <Text>{recipe.content}</Text>
-  //       </View>
-  //     });
-  //     return results;
-  //   }
-  //   return null;
-  // }
 
   renderRecipes(recipes) {
     return [{}].concat(recipes).map( (recipe, i) =>
@@ -104,23 +88,11 @@ class Recipes extends Component {
               </TouchableOpacity>
               <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
             </View>
-          : <View
-              key="new"
-            >
-              <TouchableOpacity
-                // href="/recipes/new"
-                // onPress={this.handleRecipeClick}
-                title="Create a new recipe"
-              >
-                <Text>{"\uFF0B"} Create a new recipe</Text>
-              </TouchableOpacity>
-            </View>
+          : null
     );
   }
 
   handleRecipeClick = (recipe) => {
-    console.log('recipe: ', recipe);
-    console.log('id: ', recipe.recipeId);
     this.props.navigation.push('Recipe', { recipe: recipe});
   }
 
@@ -136,21 +108,11 @@ class Recipes extends Component {
         <View style={globalStyles.container}>
           <View style={styles.content}>
             <TouchableOpacity
-              type="submit"
-              onPress={this.getRecipes}
-              title="Get Recipes"
-              accessibilityLabel="Get Recipes"
-            >
-              <Text>Get Recipes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              type="submit"
-              onPress={this.submitRecipe}
-              title="Submit Recipe"
-              accessibilityLabel="Submit Recipe"
-            >
-              <Text>Submit Recipe</Text>
-            </TouchableOpacity>
+                onPress={() => this.props.navigation.push('CreateRecipe')}
+                title="Create a new recipe"
+              >
+                <Text>{"\uFF0B"} Create a new recipe</Text>
+              </TouchableOpacity>
             {showRecipes}
           </View>
         </View>

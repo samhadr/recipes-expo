@@ -5,10 +5,13 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 
 import { API } from 'aws-amplify';
+
+import EditableText from '../components/EditableText';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -31,32 +34,36 @@ class Recipe extends Component {
 
     this.state = {
       isLoading: true,
-      recipe: null,
       title: '',
-      ingredients: [],
-      method: '',
-      attachmentURL: null
+      ingredients: '',
+      instructions: '',
+      date: 0,
+      id: '',
+      attachment: '',
+      isUpdating: false,
+      isDeleting: false
     }
 
     this.file = null;
 
+    this.handleDelete = this.handleDelete.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   componentDidMount() {
-    this.showRecipe();
+    this.setRecipe();
   }
 
-  showRecipe = () => {
+  setRecipe = () => {
     const recipe = this.props.navigation.getParam('recipe');
-    console.log('recipe: ', recipe);
-    return (
-      <View>
-        <Text>{recipe.title}</Text>
-        <Text>{recipe.ingredients}</Text>
-        <Text>{recipe.method}</Text>
-      </View>
-    )
+    this.setState({
+      title: recipe.title,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      date: recipe.createdAt,
+      id: recipe.recipeId
+    });
   }
 
   onChangeText = (key, value) => {
@@ -65,53 +72,66 @@ class Recipe extends Component {
     });
   }
 
-  updateRecipe = async event => {
-    event.preventDefault();
+  async handleUpdate() {
+    console.log('handle update');
   
-    if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-      alert("Please pick a file smaller than 5MB");
-      return;
-    }
+    // if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
+    //   alert("Please pick a file smaller than 5MB");
+    //   return;
+    // }
   
-    this.setState({ isLoading: true });
+    this.setState({ isUpdating: true });
   
     try {
-      await this.createRecipe({
-        content: this.state.recipe
+      await this.updateRecipe({
+        title: this.state.title,
+        ingredients: this.state.ingredients,
+        instructions: this.state.instructions,
+        attachment: this.state.attachment
       });
-      this.props.navigation.navigate('Recipes');
+      this.setState({ isUpdating: false });
+      this.props.navigation.goBack();
     } catch (e) {
       console.log(e);
-      this.setState({ isLoading: false });
+      this.setState({ isUpdating: false });
     }
   }
 
-  putRecipe = (recipe) => {
-    return API.put('recipes', '/recipes', {
+  updateRecipe = (recipe) => {
+    return API.put('recipes', `/recipes/${this.state.id}`, {
       body: recipe
     });
   }
 
   deleteRecipe() {
-    return API.del("recipes", `/recipes/${this.props.match.params.id}`);
+    const { id } = this.state;
+    console.log('recipe to delete: ', id);
+    return API.del('recipes', `/recipes/${id}`);
+  }
+
+  confirmDelete = () => {
+    console.log('confirm delete');
+    Alert.alert(
+      'Delete Recipe',
+      'Are you sure you want to delete this recipe?',
+      [
+        // {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => this.handleDelete()},
+      ],
+      { cancelable: false }
+    )
   }
   
-  handleDelete = async event => {
-    event.preventDefault();
-  
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this recipe?"
-    );
-  
-    if (!confirmed) {
-      return;
-    }
+  async handleDelete() {
+    console.log('handle delete');
   
     this.setState({ isDeleting: true });
   
     try {
       await this.deleteRecipe();
-      this.props.history.push("/");
+      this.setState({ isDeleting: false });
+      this.props.navigation.goBack();
     } catch (e) {
       alert(e);
       this.setState({ isDeleting: false });
@@ -119,19 +139,28 @@ class Recipe extends Component {
   }
 
   render() {
-    const recipe = this.props.navigation.getParam('recipe');
-    console.log('recipe: ', recipe);
+    // const recipe = this.props.navigation.getParam('recipe');
+    const { title, ingredients, instructions, date, id } = this.state;
+    // console.log('recipe: ', recipe);
+    console.log('isUpdating: ', this.state.isUpdating);
+    console.log('isDeleting: ', this.state.isDeleting);
 
     return (
       <View style={globalStyles.container}>
         <View style={globalStyles.content}>
           <ScrollView>
-            <Text>{recipe.title}</Text>
-            <Text>{recipe.ingredients}</Text>
-            <Text>{recipe.method}</Text>
+            <Text>{title}</Text>
+            <Text>{ingredients}</Text>
+            <Text>{instructions}</Text>
+            <Text>{"Created: " + new Date(date).toLocaleString()}</Text>
+            <Text>{id}</Text>
+            <EditableText
+              text={title ? title : 'placeholder'}
+              sendText={value => this.onChangeText('title', value)}
+            />
           </ScrollView>
           <View style={formStyles.formBox}>
-            <TextInput
+            {/* <TextInput
               style={formStyles.textInput}
               value={this.state.recipeTitle}
               onChangeText={value => this.onChangeText('recipeTitle', value)}
@@ -148,12 +177,12 @@ class Recipe extends Component {
               style={formStyles.textInput}
               multiline
               numberOfLines={5}
-              value={this.state.method}
-              onChangeText={value => this.onChangeText('method', value)}
-              placeholder="Method"
-            />
+              value={this.state.instructions}
+              onChangeText={value => this.onChangeText('instructions', value)}
+              placeholder="instructions"
+            /> */}
             {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               type="submit"
               style={formStyles.button}
               onPress={this.submitRecipe}
@@ -161,6 +190,24 @@ class Recipe extends Component {
               accessibilityLabel="Create Recipe"
             >
               <Text style={formStyles.buttonText}>Create Recipe</Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity
+              type="submit"
+              style={formStyles.button}
+              onPress={this.handleUpdate}
+              title="Update Recipe"
+              accessibilityLabel="Update Recipe"
+            >
+              <Text style={formStyles.buttonText}>Update Recipe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              type="submit"
+              style={formStyles.button}
+              onPress={this.confirmDelete}
+              title="Delete Recipe"
+              accessibilityLabel="Delete Recipe"
+            >
+              <Text style={formStyles.buttonText}>Delete Recipe</Text>
             </TouchableOpacity>
           </View>
         </View>

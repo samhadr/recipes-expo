@@ -14,10 +14,12 @@ export async function main(event, context, callback) {
     },
     // 'UpdateExpression' defines the attributes to be updated
     // 'ExpressionAttributeValues' defines the value in the update expression
-    UpdateExpression: "SET content = :content, attachment = :attachment",
+    UpdateExpression: "SET title = :title, ingredients = :ingredients, instructions = :instructions, attachment = :attachment",
     ExpressionAttributeValues: {
+      ":title": data.title ? data.title : null,
+      ":ingredients": data.ingredients ? data.ingredients : null,
+      ":instructions": data.instructions ? data.instructions : null,
       ":attachment": data.attachment ? data.attachment : null,
-      ":content": data.content ? data.content : null
     },
     ReturnValues: "ALL_NEW"
   };
@@ -26,6 +28,7 @@ export async function main(event, context, callback) {
     const result = await dynamoDbLib.call("update", params);
     callback(null, success({ status: true }));
   } catch (e) {
+    console.log(e);
     callback(null, failure({ status: false }));
   }
 }

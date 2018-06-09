@@ -22,7 +22,7 @@ export async function main(event, context, callback) {
       // content: data.content,
       title: data.title,
       ingredients: data.ingredients,
-      method: data.method,
+      instructions: data.instructions,
       attachment: data.attachment,
       createdAt: Date.now()
     }
@@ -32,6 +32,7 @@ export async function main(event, context, callback) {
     await dynamoDbLib.call("put", params);
     callback(null, success(params.Item));
   } catch (e) {
+    console.log(e);
     callback(null, failure({ status: false }));
   }
 }
