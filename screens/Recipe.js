@@ -157,13 +157,6 @@ class Recipe extends Component {
       <View style={globalStyles.container}>
         <View style={globalStyles.content}>
           <ScrollView>
-            {/* <Image
-              style={{
-                width: 100,
-                height: 100,
-              }}
-              source={{ uri: "https://recipes-upload.s3.us-west-1.amazonaws.com/private/us-west-2%3A57d171e2-7304-4756-ac65-36e87c45866c/1528734770187-IMG_0005.JPG" }}
-            /> */}
             {attachment
               ? <Image
                   style={{
