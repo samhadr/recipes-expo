@@ -115,7 +115,7 @@ class CreateRecipe extends Component {
       // attachment: image.uri,
       showPhotos: false
     }),
-    this.file = p;
+    this.file = p.node.image;
     console.log('p: ', p);
   }
 
@@ -155,7 +155,7 @@ class CreateRecipe extends Component {
                   width: 300,
                   height: 100,
                 }}
-                source={this.file}
+                source={{ uri: this.file.uri }}
               />
             : null
           }

@@ -6,10 +6,11 @@ import {
   View,
   TextInput,
   ScrollView,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 
-import { API } from 'aws-amplify';
+import { API, Storage } from 'aws-amplify';
 
 import EditableText from '../components/EditableText';
 
@@ -40,12 +41,14 @@ class Recipe extends Component {
       date: 0,
       id: '',
       attachment: '',
+      // attachmentURL: '',
       isUpdating: false,
       isDeleting: false
     }
 
     this.file = null;
 
+    this.setRecipe = this.setRecipe.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
@@ -55,14 +58,19 @@ class Recipe extends Component {
     this.setRecipe();
   }
 
-  setRecipe = () => {
+  async setRecipe() {
     const recipe = this.props.navigation.getParam('recipe');
+    let attachmentURL;
+    if (recipe.attachment) {
+      attachmentURL = await Storage.vault.get(recipe.attachment);
+    }
     this.setState({
       title: recipe.title,
       ingredients: recipe.ingredients,
       instructions: recipe.instructions,
       date: recipe.createdAt,
-      id: recipe.recipeId
+      id: recipe.recipeId,
+      attachment: attachmentURL
     });
   }
 
@@ -87,7 +95,7 @@ class Recipe extends Component {
         title: this.state.title,
         ingredients: this.state.ingredients,
         instructions: this.state.instructions,
-        attachment: this.state.attachment
+        attachment: ''
       });
       this.setState({ isUpdating: false });
       this.props.navigation.goBack();
@@ -140,8 +148,8 @@ class Recipe extends Component {
 
   render() {
     // const recipe = this.props.navigation.getParam('recipe');
-    const { title, ingredients, instructions, date, id } = this.state;
-    // console.log('recipe: ', recipe);
+    const { title, ingredients, instructions, date, id, attachment } = this.state;
+    console.log('attachment: ', attachment, typeof attachment);
     console.log('isUpdating: ', this.state.isUpdating);
     console.log('isDeleting: ', this.state.isDeleting);
 
@@ -149,6 +157,23 @@ class Recipe extends Component {
       <View style={globalStyles.container}>
         <View style={globalStyles.content}>
           <ScrollView>
+            {/* <Image
+              style={{
+                width: 100,
+                height: 100,
+              }}
+              source={{ uri: "https://recipes-upload.s3.us-west-1.amazonaws.com/private/us-west-2%3A57d171e2-7304-4756-ac65-36e87c45866c/1528734770187-IMG_0005.JPG" }}
+            /> */}
+            {attachment
+              ? <Image
+                  style={{
+                    width: 100,
+                    height: 100,
+                  }}
+                  source={{ uri: attachment }}
+                />
+              : null
+            }
             <Text>{title}</Text>
             <Text>{ingredients}</Text>
             <Text>{instructions}</Text>
