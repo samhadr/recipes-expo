@@ -8,8 +8,11 @@ import {
   CameraRoll,
   Button,
   ScrollView,
-  Image
+  Image,
+  Platform
 } from 'react-native';
+
+import { ImagePicker, Permissions } from 'expo';
 
 import { API } from 'aws-amplify';
 import config from '../config';
@@ -40,13 +43,16 @@ class CreateRecipe extends Component {
       // attachment: '',
       isCreating: false,
       showPhotos: false,
-      photos: []
+      photos: [],
+      image: '',
+      isGettingImages: false
     }
 
     this.file = null;
 
     this.onChangeText = this.onChangeText.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
+    // this.chooseImage = this.chooseImage.bind(this);
   }
 
   onChangeText = (key, value) => {
@@ -93,35 +99,68 @@ class CreateRecipe extends Component {
     this.file = event.target.files[0];
   }
 
-  handleImageButton = () => {
-    CameraRoll.getPhotos({
-        first: 20,
-        assetType: 'Photos',
-      })
-      .then(r => {
-        this.setState({
-          photos: r.edges,
-          showPhotos: true
-        });
-      })
-      .catch((err) => {
-          console.log('image error: ', err);
-          this.setState({ showPhotos: false });
-      });
-    };
+  // handleImageButton = () => {
+  //   CameraRoll.getPhotos({
+  //       first: 20,
+  //       assetType: 'All',
+  //     })
+  //     .then(r => {
+  //       this.setState({
+  //         photos: r.edges,
+  //         showPhotos: true
+  //       });
+  //     })
+  //     .catch((err) => {
+  //         console.log('image error: ', err);
+  //         this.setState({ showPhotos: false });
+  //     });
+  //   };
 
-  selectImage = (p) => {
-    this.setState({
-      // attachment: image.uri,
-      showPhotos: false
-    }),
-    this.file = p.node.image;
-    console.log('p: ', p);
+ async handleImageButton() {
+    if (Platform.OS === 'ios') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status === 'granted') {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          this.file = result;
+          console.log('this.file: ', this.file);
+        }
+      }
+    }
   }
 
+  // async chooseImage() {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //   });
+
+  //   console.log(result);
+
+  //   if (!result.cancelled) {
+  //     this.file = result;
+  //   }
+  // }
+
+  // selectImage = (p) => {
+  //   this.setState({
+  //     // attachment: image.uri,
+  //     showPhotos: false
+  //   }),
+  //   this.file = p.node.image;
+  //   console.log('p: ', p);
+  // }
+
   render() {
-    const { showPhotos } = this.state;
-    console.log('showPhotos: ', showPhotos);
+    // const { showPhotos } = this.state;
+    // console.log('showPhotos: ', showPhotos);
+    // console.log('this.file: ', this.file);
 
     return (
       <View style={globalStyles.container}>
@@ -166,7 +205,7 @@ class CreateRecipe extends Component {
             placeholder="Add Attachment"
           /> */}
           <Button title="Load Images" onPress={this.handleImageButton} />
-          <ScrollView>
+          {/* <ScrollView>
             {!showPhotos
               ? null
               : this.state.photos.map((p, i) => {
@@ -191,7 +230,7 @@ class CreateRecipe extends Component {
                 );
               })
             }
-          </ScrollView>
+          </ScrollView> */}
           {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
           <TouchableOpacity
             type="submit"
