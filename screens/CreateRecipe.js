@@ -12,7 +12,7 @@ import {
   Platform
 } from 'react-native';
 
-import { ImagePicker, Permissions } from 'expo';
+import { ImagePicker, Permissions, FileSystem } from 'expo';
 
 import { API } from 'aws-amplify';
 import config from '../config';
@@ -40,19 +40,12 @@ class CreateRecipe extends Component {
       title: '',
       ingredients: '',
       instructions: '',
-      // attachment: '',
       isCreating: false,
       showPhotos: false,
       photos: [],
-      image: '',
-      isGettingImages: false
+      imageObject: null,
+      image: ''
     }
-
-    this.file = null;
-
-    this.onChangeText = this.onChangeText.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
-    // this.chooseImage = this.chooseImage.bind(this);
   }
 
   onChangeText = (key, value) => {
@@ -61,19 +54,22 @@ class CreateRecipe extends Component {
     });
   }
 
-  async handleCreate() {
+  handleCreate = async () => {
     console.log('handle create');
+
+    let fileInfo = await FileSystem.getInfoAsync(this.state.image, { size: true });
+    console.log('file size: ', fileInfo.size);
   
-    if (this.file && this.file.size > config.s3.MAX_FILE_SIZE) {
-      alert("Please pick a file smaller than 5MB");
+    if (this.state.imageObject && (fileInfo.size > config.s3.MAX_FILE_SIZE)) {
+      alert("Please choose a file smaller than 5MB");
       return;
     }
   
     this.setState({ isCreating: true });
   
     try {
-      const attachment = this.file
-        ? await s3Upload(this.file)
+      const attachment = this.state.imageObject
+        ? await s3Upload(this.state.imageObject)
         : null;
       
       await this.createRecipe({
@@ -99,68 +95,53 @@ class CreateRecipe extends Component {
     this.file = event.target.files[0];
   }
 
-  // handleImageButton = () => {
-  //   CameraRoll.getPhotos({
-  //       first: 20,
-  //       assetType: 'All',
-  //     })
-  //     .then(r => {
-  //       this.setState({
-  //         photos: r.edges,
-  //         showPhotos: true
-  //       });
-  //     })
-  //     .catch((err) => {
-  //         console.log('image error: ', err);
-  //         this.setState({ showPhotos: false });
-  //     });
-  //   };
-
- async handleImageButton() {
+  handleImageButton = async () => {
     if (Platform.OS === 'ios') {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status === 'granted') {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          allowsEditing: true,
-          aspect: [4, 3],
-        });
-    
-        console.log(result);
-    
-        if (!result.cancelled) {
-          this.file = result;
-          console.log('this.file: ', this.file);
-        }
+        this.chooseImage();
+      } else {
+        const error = 'Camera Roll permission not granted';
+        console.log('error: ', error);
+        throw new Error(error);
       }
+    } else {
+      this.chooseImage();
     }
   }
 
-  // async chooseImage() {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //   });
+  chooseImage = () => {
+    ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    })
+    .then(result => {
+      if (result && !result.cancelled) {
+        this.setState({
+          imageObject: result,
+          image: result.uri
+        });
+        this.file = result;
+      }
+    })
+    .catch((err) => {
+        console.log('ImagePicker error: ', err);
+    });
+  }
 
-  //   console.log(result);
-
-  //   if (!result.cancelled) {
-  //     this.file = result;
-  //   }
-  // }
-
-  // selectImage = (p) => {
-  //   this.setState({
-  //     // attachment: image.uri,
-  //     showPhotos: false
-  //   }),
-  //   this.file = p.node.image;
-  //   console.log('p: ', p);
-  // }
+  selectImage = (p) => {
+    this.setState({
+      showPhotos: false
+    }),
+    this.file = p.node.image;
+    console.log('p: ', p);
+  }
 
   render() {
-    // const { showPhotos } = this.state;
-    // console.log('showPhotos: ', showPhotos);
-    // console.log('this.file: ', this.file);
+    const { imageObject, image } = this.state;
+    console.log('imageObject: ', imageObject);
+    console.log('image: ', image);
+    console.log('this.file: ', this.file);
 
     return (
       <View style={globalStyles.container}>
@@ -188,49 +169,18 @@ class CreateRecipe extends Component {
             placeholder="Instructions"
           />
           {
-            this.file !== null
+            image
             ? <Image
                 style={{
                   width: 300,
                   height: 100,
                 }}
-                source={{ uri: this.file.uri }}
+                // source={{ uri: Platform.OS === 'ios' ? this.file.uri : this.state.image }}
+                source={{ uri: this.state.image }}
               />
             : null
           }
-          {/* <TextInput
-            style={formStyles.textInput}
-            value={this.state.attachment}
-            onChangeText={value => this.onChangeText('attachment', value)}
-            placeholder="Add Attachment"
-          /> */}
           <Button title="Load Images" onPress={this.handleImageButton} />
-          {/* <ScrollView>
-            {!showPhotos
-              ? null
-              : this.state.photos.map((p, i) => {
-                return (
-                  <TouchableOpacity
-                    // type="submit"
-                    // style={formStyles.button}
-                    key={i}
-                    onPress={() => this.selectImage(p)}
-                    title="Select Image"
-                    accessibilityLabel="Select Image"
-                  >
-                    <Image
-                      // key={i}
-                      style={{
-                        width: 300,
-                        height: 100,
-                      }}
-                      source={{ uri: p.node.image.uri }}
-                    />
-                  </TouchableOpacity>
-                );
-              })
-            }
-          </ScrollView> */}
           {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
           <TouchableOpacity
             type="submit"
