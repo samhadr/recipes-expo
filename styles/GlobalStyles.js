@@ -1,20 +1,26 @@
 import { StyleSheet } from 'react-native';
 
+import Colors from '../constants/Colors';
+
 const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
+    height: '100%',
     padding: 15,
   },
   content: {
     flex: 12,
     padding: 10,
   },
+  centerContent: {
+    alignItems: 'center',
+  },
   heading: {
-    marginBottom: 10,
+    marginBottom: 5,
     fontSize: 20,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   error: {
     marginBottom: 15,

@@ -17,8 +17,6 @@ import { ImagePicker, Permissions, FileSystem } from 'expo';
 
 import { s3Upload, s3Delete } from '../libs/awsLib';
 
-// import EditableText from '../components/EditableText';
-
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
 
@@ -31,8 +29,7 @@ class Recipe extends Component {
     authenticate: PropTypes.func,
     isAuthenticated: PropTypes.bool,
     user: PropTypes.object,
-    userId: PropTypes.string,
-    // recipeId: PropTypes.string,
+    userId: PropTypes.string
   }
 
   constructor(props) {
@@ -58,17 +55,6 @@ class Recipe extends Component {
   componentDidMount() {
     this.setRecipe();
   }
-
-  // componentDidUpdate(prevState) {
-  //   if (
-  //     prevState.title !== this.state.title ||
-  //     prevState.ingredients !== this.state.ingredients ||
-  //     prevState.instructions !== this.state.instructions ||
-  //     prevState.newAttachment !== this.state.newAttachment
-  //   ) {
-  //     this.handleUpdate();
-  //   }
-  // }
 
   setRecipe = async () => {
     const recipe = this.props.navigation.getParam('recipe');
@@ -128,7 +114,6 @@ class Recipe extends Component {
         isUpdating: false,
         editMode: false
       });
-      // this.props.navigation.goBack();
     } catch (e) {
       console.log(e);
       this.setState({ isUpdating: false });
@@ -245,7 +230,6 @@ class Recipe extends Component {
       ingredients,
       instructions,
       date,
-      id,
       attachment,
       attachmentURL,
       newAttachment,
@@ -265,36 +249,49 @@ class Recipe extends Component {
             {
               editMode
               ? <View>
-                  <Image
-                    style={{
-                      width: 100,
-                      height: 100,
-                    }}
-                    source={{ uri: attachmentURL }}
-                  />
-                  <TouchableOpacity
-                    onPress={this.handleImageButton}
-                    title="Change image"
-                  >
-                    <Text>{"\uFF0B"} Change image</Text>
-                  </TouchableOpacity>
+                  {attachmentURL
+                    ? <View>
+                        <Image
+                          style={{
+                            width: 100,
+                            height: 100,
+                          }}
+                          source={{ uri: attachmentURL }}
+                        />
+                        <TouchableOpacity
+                          onPress={this.handleImageButton}
+                          title="Change image"
+                        >
+                          <Text>{"\uFF0B"} Change image</Text>
+                        </TouchableOpacity>
+                      </View>
+                    : <TouchableOpacity
+                        onPress={this.handleImageButton}
+                        title="Add image"
+                      >
+                        <Text>{"\uFF0B"} Add image</Text>
+                      </TouchableOpacity>
+                  }
                   <TextInput
                     style={formStyles.textInput}
                     value={title}
                     onChangeText={value => this.onChangeText('title', value)}
                     placeholder={title}
+                    underlineColorAndroid="transparent"
                   />
                   <TextInput
                     style={formStyles.textInput}
                     value={ingredients}
                     onChangeText={value => this.onChangeText('ingredients', value)}
                     placeholder={ingredients}
+                    underlineColorAndroid="transparent"
                   />
                   <TextInput
                     style={formStyles.textInput}
                     value={instructions}
                     onChangeText={value => this.onChangeText('instructions', value)}
                     placeholder={instructions}
+                    underlineColorAndroid="transparent"
                   />
                 </View>
               : <View>
@@ -313,10 +310,6 @@ class Recipe extends Component {
                   <Text>{instructions}</Text>
                 </View>
             }
-            {/* <EditableText
-              text={title ? title : 'placeholder'}
-              sendText={value => this.onChangeText('title', value)}
-            /> */}
             <Text>{"Created: " + new Date(date).toLocaleString()}</Text>
           </ScrollView>
           <View style={formStyles.formBox}>

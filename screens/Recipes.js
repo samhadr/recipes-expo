@@ -13,11 +13,13 @@ import { WebBrowser } from 'expo';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { API } from "aws-amplify";
+import { API, Storage } from "aws-amplify";
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
 import recipesStyles from '../styles/RecipesStyles';
+
+import Colors from '../constants/Colors';
 
 class Recipes extends Component {
   static navigationOptions = {
@@ -75,17 +77,22 @@ class Recipes extends Component {
   renderRecipes(recipes) {
     return [{}].concat(recipes).map( (recipe, i) =>
         i !== 0
+        
           ? <View
               key={recipe.recipeId}
               style={recipesStyles.recipe}
             >
-              {/* <Image
-                style={{
-                  width: 300,
-                  height: 100,
-                }}
-                source={recipe.attachment.uri}
-              /> */}
+              {
+                recipe.attachment !== null
+                ? <Image
+                    style={{
+                      width: 300,
+                      height: 100,
+                    }}
+                    source={{ uri: recipe.attachment }}
+                  />
+                : null
+              }
               <TouchableOpacity
                 onPress={this.handleRecipeClick.bind(this, recipe)}
                 title={recipe.title}
@@ -117,11 +124,12 @@ class Recipes extends Component {
         <View style={globalStyles.container}>
           <View style={styles.content}>
             <TouchableOpacity
-                onPress={() => this.props.navigation.push('CreateRecipe')}
-                title="Create a new recipe"
-              >
-                <Text>{"\uFF0B"} Create a new recipe</Text>
-              </TouchableOpacity>
+              onPress={() => this.props.navigation.push('CreateRecipe')}
+              title="Create a new recipe"
+              style={{ alignSelf: 'flex-start', paddingBottom: 10 }}
+            >
+              <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Recipe</Text>
+            </TouchableOpacity>
             {showRecipes}
           </View>
         </View>

@@ -80,6 +80,7 @@ class ConfirmSignUp extends Component {
               value={this.state.confirmationCode}
               onChangeText={value => this.onChangeText('confirmationCode', value)}
               placeholder="Confirmation Code"
+              underlineColorAndroid="transparent"
             />
             {this.state.showConfirmError ? <Text style={globalStyles.error}>{this.state.confirmError}</Text> : null}
             <TouchableOpacity

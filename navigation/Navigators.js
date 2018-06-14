@@ -3,7 +3,8 @@ import React from 'react';
 import {
   Platform,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Text
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -24,7 +25,9 @@ import CreateRecipe from '../screens/CreateRecipe';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-import DrawerMenu from '../components/DrawerMenu';
+import DrawerHeader from '../components/DrawerHeader';
+
+import Colors from '../constants/Colors';
 
 export const RecipesStack = createStackNavigator(
   {
@@ -45,14 +48,23 @@ export const RecipesStack = createStackNavigator(
       headerStyle: {
         paddingRight: 10,
         paddingLeft: 10,
+        backgroundColor: Colors.sageGreen,
       },
       headerTitle: 'Recipes',
-      // drawerLabel: 'Recipes',
+      headerTintColor: Colors.tan,
+      // headerLeft: (
+      //   <TouchableOpacity
+      //     onPress={() => navigation.push('CreateRecipe')}
+      //     title="Create a new recipe"
+      //   >
+      //     <Text style={{ color: '#fff' }}>{"\uFF0B"} Create</Text>
+      //   </TouchableOpacity>
+      // ),
       headerRight: (
         <TouchableOpacity
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
-          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color={Colors.tan} />
         </TouchableOpacity>
       ),
     }),
@@ -184,7 +196,7 @@ export const Drawer = createDrawerNavigator(
     drawerPosition: 'right',
     contentComponent: props => 
       <ScrollView>
-        <DrawerMenu {...props} />
+        <DrawerHeader {...props} />
         <DrawerItems {...props} />
       </ScrollView>
   },

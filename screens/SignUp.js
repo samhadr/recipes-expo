@@ -76,6 +76,7 @@ class SignUp extends Component {
             value={this.state.email}
             onChangeText={value => this.onChangeText('email', value)}
             placeholder="Email"
+            underlineColorAndroid="transparent"
             autoCapitalize="none"
             autoFocus={true}
             keyboardType="email-address"
@@ -86,6 +87,7 @@ class SignUp extends Component {
             value={this.state.password}
             onChangeText={value => this.onChangeText('password', value)}
             placeholder="Password"
+            underlineColorAndroid="transparent"
             secureTextEntry={true}
           />
           <Text style={styles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>

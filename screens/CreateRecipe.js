@@ -138,6 +138,7 @@ class CreateRecipe extends Component {
             value={this.state.title}
             onChangeText={value => this.onChangeText('title', value)}
             placeholder="Recipe Title"
+            underlineColorAndroid="transparent"
             autoFocus={true}
           />
           <TextInput
@@ -145,6 +146,7 @@ class CreateRecipe extends Component {
             value={this.state.ingredients}
             onChangeText={value => this.onChangeText('ingredients', value)}
             placeholder="Add Ingredient"
+            underlineColorAndroid="transparent"
           />
           <TextInput
             style={formStyles.textInput}
@@ -153,6 +155,7 @@ class CreateRecipe extends Component {
             value={this.state.instructions}
             onChangeText={value => this.onChangeText('instructions', value)}
             placeholder="Instructions"
+            underlineColorAndroid="transparent"
           />
           {
             image

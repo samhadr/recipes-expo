@@ -1,8 +1,11 @@
 import { StyleSheet } from 'react-native';
 
+import Colors from '../constants/Colors';
+
 const globalStyles = StyleSheet.create({
-  drawer: {
+  drawerHeader: {
     alignItems: 'flex-start',
+    backgroundColor: Colors.sageGreen,
     width: '100%',
     padding: 15,
     paddingTop: 30,
@@ -11,10 +14,6 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 7,
-    paddingBottom: 7,
-    borderBottomWidth: 1,
-    borderColor: '#eee',
   },
 });
 

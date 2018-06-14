@@ -33,11 +33,17 @@ const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.red,
-    height: 30,
+    backgroundColor: Colors.sageGreen,
     marginBottom: 10,
+    padding: 5,
+    paddingBottom: 8,
+    borderRadius: 3,
+  },
+  buttonFixedWidth: {
+    width: 140,
   },
   buttonText: {
+    fontSize: 20,
     color: '#fff',
   },
 });

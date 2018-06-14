@@ -32,7 +32,7 @@ class SignOut extends Component {
       <Button
         onPress={this.signOut}
         title="Sign Out"
-        color="red"
+        color="white"
       />
     );
   }

@@ -15,7 +15,7 @@ import { WebBrowser } from 'expo';
 import SignIn from './SignIn';
 
 import globalStyles from '../styles/GlobalStyles';
-import styles from '../styles/HomeStyles';
+import formStyles from '../styles/FormStyles';
 import Colors from '../constants/Colors';
 
 class Welcome extends Component {
@@ -32,22 +32,39 @@ class Welcome extends Component {
 
     return (
       <View style={globalStyles.container}>
-        <View style={styles.content}>
-          <View style={styles.div}>
-            <Text>Welcome to Recipes</Text>
-            <Button
+        <View style={globalStyles.centerContent}>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={globalStyles.heading}>Welcome to Recipes</Text>
+            {/* <Button
               title="Sign Up"
               onPress={() => navigate('SignUp')}
-              style={styles.button}
-            />
+              style={formStyles.button}
+              color={Colors.sageGreen}
+            /> */}
+            <TouchableOpacity
+              style={[formStyles.button, formStyles.buttonFixedWidth]}
+              onPress={() => navigate('SignUp')}
+              title="Sign Up"
+              accessibilityLabel="Sign Up"
+            >
+              <Text style={formStyles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.div}>
-            <Text>Already have an account?</Text>
-            <Button
+          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+            <Text style={globalStyles.heading}>Already have an account?</Text>
+            {/* <Button
               title="Sign In"
               onPress={() => navigate('SignIn')}
-              style={styles.button}
-            />
+              color={Colors.sageGreen}
+            /> */}
+            <TouchableOpacity
+              style={[formStyles.button, formStyles.buttonFixedWidth]}
+              onPress={() => navigate('SignIn')}
+              title="Sign In"
+              accessibilityLabel="Sign In"
+            >
+              <Text style={formStyles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
