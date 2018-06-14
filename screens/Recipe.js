@@ -7,12 +7,17 @@ import {
   TextInput,
   ScrollView,
   Alert,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 
 import { API, Storage } from 'aws-amplify';
 
-import EditableText from '../components/EditableText';
+import { ImagePicker, Permissions, FileSystem } from 'expo';
+
+import { s3Upload, s3Delete } from '../libs/awsLib';
+
+// import EditableText from '../components/EditableText';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -41,28 +46,35 @@ class Recipe extends Component {
       date: 0,
       id: '',
       attachment: '',
-      // attachmentURL: '',
+      attachmentURL: '',
+      newAttachment: '',
+      imageObject: null,
+      editMode: false,
       isUpdating: false,
       isDeleting: false
     }
-
-    this.file = null;
-
-    this.setRecipe = this.setRecipe.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.onChangeText = this.onChangeText.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   componentDidMount() {
     this.setRecipe();
   }
 
-  async setRecipe() {
+  // componentDidUpdate(prevState) {
+  //   if (
+  //     prevState.title !== this.state.title ||
+  //     prevState.ingredients !== this.state.ingredients ||
+  //     prevState.instructions !== this.state.instructions ||
+  //     prevState.newAttachment !== this.state.newAttachment
+  //   ) {
+  //     this.handleUpdate();
+  //   }
+  // }
+
+  setRecipe = async () => {
     const recipe = this.props.navigation.getParam('recipe');
-    let attachmentURL;
+    let attachmentPath;
     if (recipe.attachment) {
-      attachmentURL = await Storage.vault.get(recipe.attachment);
+      attachmentPath = await Storage.vault.get(recipe.attachment);
     }
     this.setState({
       title: recipe.title,
@@ -70,7 +82,8 @@ class Recipe extends Component {
       instructions: recipe.instructions,
       date: recipe.createdAt,
       id: recipe.recipeId,
-      attachment: attachmentURL
+      attachment: recipe.attachment,
+      attachmentURL: attachmentPath
     });
   }
 
@@ -80,25 +93,42 @@ class Recipe extends Component {
     });
   }
 
-  async handleUpdate() {
+  handleUpdate = async () => {
     console.log('handle update');
   
-    // if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-    //   alert("Please pick a file smaller than 5MB");
-    //   return;
-    // }
+    if (this.state.newAttachment) {
+      let fileInfo = await FileSystem.getInfoAsync(this.state.newAttachment, { size: true });
+      console.log('file size: ', fileInfo.size);
+    
+      if (this.state.imageObject && (fileInfo.size > config.s3.MAX_FILE_SIZE)) {
+        alert("Please choose a file smaller than 5MB");
+        return;
+      }
+    }
   
     this.setState({ isUpdating: true });
   
     try {
+      const attachment = this.state.imageObject
+        ? await s3Upload(this.state.imageObject)
+        : null;
+      await s3Delete(this.state.attachment);
       await this.updateRecipe({
         title: this.state.title,
         ingredients: this.state.ingredients,
         instructions: this.state.instructions,
-        attachment: ''
+        attachment
       });
-      this.setState({ isUpdating: false });
-      this.props.navigation.goBack();
+      let attachmentPath;
+      if (attachment) {
+        attachmentPath = await Storage.vault.get(attachment);
+      }
+      this.setState({
+        attachmentURL: attachmentPath,
+        isUpdating: false,
+        editMode: false
+      });
+      // this.props.navigation.goBack();
     } catch (e) {
       console.log(e);
       this.setState({ isUpdating: false });
@@ -131,12 +161,13 @@ class Recipe extends Component {
     )
   }
   
-  async handleDelete() {
+  handleDelete = async () => {
     console.log('handle delete');
   
     this.setState({ isDeleting: true });
   
     try {
+      await s3Delete(this.state.attachment);
       await this.deleteRecipe();
       this.setState({ isDeleting: false });
       this.props.navigation.goBack();
@@ -146,78 +177,150 @@ class Recipe extends Component {
     }
   }
 
+  handleEdit = () => {
+    this.setState(prevState => ({
+      editMode: !prevState.editMode
+    }));
+  }
+
+  editUpdateButton = () => {
+    const { editMode } = this.state;
+    return editMode
+      ? <TouchableOpacity
+          type="submit"
+          style={formStyles.button}
+          onPress={this.handleUpdate}
+          title="Done"
+          accessibilityLabel="Done"
+        >
+          <Text style={formStyles.buttonText}>Done</Text>
+        </TouchableOpacity>
+      : <TouchableOpacity
+          type="submit"
+          style={formStyles.button}
+          onPress={this.handleEdit}
+          title="Edit Recipe"
+          accessibilityLabel="Edit Recipe"
+        >
+          <Text style={formStyles.buttonText}>Edit Recipe</Text>
+        </TouchableOpacity>
+  }
+
+  handleImageButton = async () => {
+    if (Platform.OS === 'ios') {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status === 'granted') {
+        this.chooseImage();
+      } else {
+        const error = 'Camera Roll permission not granted';
+        console.log('error: ', error);
+        throw new Error(error);
+      }
+    } else {
+      this.chooseImage();
+    }
+  }
+
+  chooseImage = () => {
+    ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    })
+    .then(result => {
+      if (result && !result.cancelled) {
+        this.setState({
+          imageObject: result,
+          attachmentURL: result.uri
+        });
+      }
+    })
+    .catch((err) => {
+        console.log('ImagePicker error: ', err);
+    });
+  }
+
   render() {
-    // const recipe = this.props.navigation.getParam('recipe');
-    const { title, ingredients, instructions, date, id, attachment } = this.state;
+    const {
+      title,
+      ingredients,
+      instructions,
+      date,
+      id,
+      attachment,
+      attachmentURL,
+      newAttachment,
+      editMode
+    } = this.state;
+    const toggleEditUpdate = this.editUpdateButton();
     console.log('attachment: ', attachment, typeof attachment);
+    console.log('attachmentURL: ', attachmentURL, typeof attachmentURL);
     console.log('isUpdating: ', this.state.isUpdating);
     console.log('isDeleting: ', this.state.isDeleting);
+    console.log('newAttachment: ', newAttachment, typeof newAttachment);
 
     return (
       <View style={globalStyles.container}>
         <View style={globalStyles.content}>
           <ScrollView>
-            {attachment
-              ? <Image
-                  style={{
-                    width: 100,
-                    height: 100,
-                  }}
-                  source={{ uri: attachment }}
-                />
-              : null
+            {
+              editMode
+              ? <View>
+                  <Image
+                    style={{
+                      width: 100,
+                      height: 100,
+                    }}
+                    source={{ uri: attachmentURL }}
+                  />
+                  <TouchableOpacity
+                    onPress={this.handleImageButton}
+                    title="Change image"
+                  >
+                    <Text>{"\uFF0B"} Change image</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={formStyles.textInput}
+                    value={title}
+                    onChangeText={value => this.onChangeText('title', value)}
+                    placeholder={title}
+                  />
+                  <TextInput
+                    style={formStyles.textInput}
+                    value={ingredients}
+                    onChangeText={value => this.onChangeText('ingredients', value)}
+                    placeholder={ingredients}
+                  />
+                  <TextInput
+                    style={formStyles.textInput}
+                    value={instructions}
+                    onChangeText={value => this.onChangeText('instructions', value)}
+                    placeholder={instructions}
+                  />
+                </View>
+              : <View>
+                  {attachmentURL
+                    ? <Image
+                        style={{
+                          width: 100,
+                          height: 100,
+                        }}
+                        source={{ uri: attachmentURL }}
+                      />
+                    : null
+                  }
+                  <Text>{title}</Text>
+                  <Text>{ingredients}</Text>
+                  <Text>{instructions}</Text>
+                </View>
             }
-            <Text>{title}</Text>
-            <Text>{ingredients}</Text>
-            <Text>{instructions}</Text>
-            <Text>{"Created: " + new Date(date).toLocaleString()}</Text>
-            <Text>{id}</Text>
-            <EditableText
+            {/* <EditableText
               text={title ? title : 'placeholder'}
               sendText={value => this.onChangeText('title', value)}
-            />
+            /> */}
+            <Text>{"Created: " + new Date(date).toLocaleString()}</Text>
           </ScrollView>
           <View style={formStyles.formBox}>
-            {/* <TextInput
-              style={formStyles.textInput}
-              value={this.state.recipeTitle}
-              onChangeText={value => this.onChangeText('recipeTitle', value)}
-              placeholder="Recipe Title"
-              autoFocus={true}
-            />
-            <TextInput
-              style={formStyles.textInput}
-              value={this.state.ingredients[0]}
-              onChangeText={value => this.onChangeText('ingredients[0]', value)}
-              placeholder="Add Ingredient"
-            />
-            <TextInput
-              style={formStyles.textInput}
-              multiline
-              numberOfLines={5}
-              value={this.state.instructions}
-              onChangeText={value => this.onChangeText('instructions', value)}
-              placeholder="instructions"
-            /> */}
-            {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
-            {/* <TouchableOpacity
-              type="submit"
-              style={formStyles.button}
-              onPress={this.submitRecipe}
-              title="Create Recipe"
-              accessibilityLabel="Create Recipe"
-            >
-              <Text style={formStyles.buttonText}>Create Recipe</Text>
-            </TouchableOpacity> */}
-            <TouchableOpacity
-              type="submit"
-              style={formStyles.button}
-              onPress={this.handleUpdate}
-              title="Update Recipe"
-              accessibilityLabel="Update Recipe"
-            >
-              <Text style={formStyles.buttonText}>Update Recipe</Text>
-            </TouchableOpacity>
+            {toggleEditUpdate}
             <TouchableOpacity
               type="submit"
               style={formStyles.button}

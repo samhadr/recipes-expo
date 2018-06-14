@@ -12,9 +12,16 @@ export async function s3Upload(file) {
   console.log('fileName: ', fileName);
   console.log('fileType: ', fileType);
 
-  const stored = await Storage.vault.put(fileName, blob, {
-    contentType: fileType,
-    level: 'private'
-  });
+  const stored = await Storage.vault.put(
+    fileName,
+    blob,
+    { contentType: fileType }
+  );
   return stored.key;
+}
+
+export async function s3Delete(file) {
+  Storage.vault.remove(file)
+    .then(result => console.log(result))
+    .catch(err => console.log(err));
 }

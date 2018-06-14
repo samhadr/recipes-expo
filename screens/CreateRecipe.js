@@ -91,10 +91,6 @@ class CreateRecipe extends Component {
     });
   }
 
-  handleFileChange = event => {
-    this.file = event.target.files[0];
-  }
-
   handleImageButton = async () => {
     if (Platform.OS === 'ios') {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -121,7 +117,6 @@ class CreateRecipe extends Component {
           imageObject: result,
           image: result.uri
         });
-        this.file = result;
       }
     })
     .catch((err) => {
@@ -129,19 +124,10 @@ class CreateRecipe extends Component {
     });
   }
 
-  selectImage = (p) => {
-    this.setState({
-      showPhotos: false
-    }),
-    this.file = p.node.image;
-    console.log('p: ', p);
-  }
-
   render() {
     const { imageObject, image } = this.state;
     console.log('imageObject: ', imageObject);
     console.log('image: ', image);
-    console.log('this.file: ', this.file);
 
     return (
       <View style={globalStyles.container}>
@@ -175,7 +161,6 @@ class CreateRecipe extends Component {
                   width: 300,
                   height: 100,
                 }}
-                // source={{ uri: Platform.OS === 'ios' ? this.file.uri : this.state.image }}
                 source={{ uri: this.state.image }}
               />
             : null
