@@ -15,6 +15,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { API, Storage } from "aws-amplify";
 
+import S3Image from '../components/S3Image';
+
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
 import recipesStyles from '../styles/RecipesStyles';
@@ -36,9 +38,7 @@ class Recipes extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      userEmail: this.props.screenProps.userEmail,
       recipesData: {},
-      recipe: "{\"title\":\"Recipe Title 01\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"instructions\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"hello.jpg\"}"
     }
     this.getRecipes = this.getRecipes.bind(this);
   }
@@ -75,37 +75,32 @@ class Recipes extends Component {
   }
 
   renderRecipes(recipes) {
-    return [{}].concat(recipes).map( (recipe, i) =>
-        i !== 0
-        
-          ? <View
-              key={recipe.recipeId}
-              style={recipesStyles.recipe}
+    return [{}].concat(recipes).map((recipe, i) =>
+      i !== 0
+        ? <View
+            key={recipe.recipeId}
+            style={recipesStyles.recipe}
+          >
+            <TouchableOpacity
+              onPress={this.handleRecipeClick.bind(this, recipe)}
+              title={recipe.title}
+              id={recipe.recipeId}
+              style={{ flex: 8 }}
             >
-              {
-                recipe.attachment !== null
-                ? <Image
-                    style={{
-                      width: 300,
-                      height: 100,
-                    }}
-                    source={{ uri: recipe.attachment }}
-                  />
-                : null
-              }
-              <TouchableOpacity
-                onPress={this.handleRecipeClick.bind(this, recipe)}
-                title={recipe.title}
-                id={recipe.recipeId}
-              >
-                <Text>{recipe.title}</Text>
-                <Text>{recipe.recipeId}</Text>
-                {/* <Text>{recipe.attachment}</Text> */}
-              </TouchableOpacity>
-              <Text>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
-            </View>
-          : null
-    );
+              <Text>{recipe.title}</Text>
+              <Text style={{ alignItems: 'flex-end' }}>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
+            </TouchableOpacity>
+            {
+              recipe.attachment !== null
+              ? <S3Image
+                  image={recipe.attachment}
+                  style={{ flex: 4 }}
+                />
+              : null
+            }
+          </View>
+        : null
+    )
   }
 
   handleRecipeClick = (recipe) => {
@@ -113,10 +108,7 @@ class Recipes extends Component {
   }
 
   render() {
-    // const { screenProps } = this.props
     const { recipesData } = this.state;
-    console.log('recipesData: ', recipesData);
-    // const userEmail = screenProps.userEmail !== null ? screenProps.userEmail : null;
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (
