@@ -1,25 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Platform,
   Text,
   TouchableOpacity,
   View,
   ScrollView,
-  Image
 } from 'react-native';
 
 import { WebBrowser } from 'expo';
 
-import { Ionicons } from '@expo/vector-icons';
-
-import { API, Storage } from "aws-amplify";
+import { API } from "aws-amplify";
 
 import S3Image from '../components/S3Image';
+import Logo from '../components/icons/Logo';
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/HomeStyles';
-import recipesStyles from '../styles/RecipesStyles';
+import recipeStyles from '../styles/RecipeStyles';
 
 import Colors from '../constants/Colors';
 
@@ -79,25 +76,26 @@ class Recipes extends Component {
       i !== 0
         ? <View
             key={recipe.recipeId}
-            style={recipesStyles.recipe}
+            style={recipeStyles.recipeListing}
           >
+          {
+            recipe.attachment !== null
+            ? <S3Image
+                image={recipe.attachment}
+                imageStyle="thumbnail"
+              />
+            : <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.sageGreen, width: 50, height: 50, marginRight: 10, padding: 10 }}>
+                <Logo fill="#fff" />
+              </View>
+            }
             <TouchableOpacity
               onPress={this.handleRecipeClick.bind(this, recipe)}
               title={recipe.title}
               id={recipe.recipeId}
-              style={{ flex: 8 }}
             >
-              <Text>{recipe.title}</Text>
-              <Text style={{ alignItems: 'flex-end' }}>{"Created: " + new Date(recipe.createdAt).toLocaleString()}</Text>
+              <Text style={globalStyles.heading}>{recipe.title}</Text>
+              <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text>
             </TouchableOpacity>
-            {
-              recipe.attachment !== null
-              ? <S3Image
-                  image={recipe.attachment}
-                  style={{ flex: 4 }}
-                />
-              : null
-            }
           </View>
         : null
     )

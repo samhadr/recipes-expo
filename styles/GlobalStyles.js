@@ -36,6 +36,13 @@ const globalStyles = StyleSheet.create({
   inlineIcon: {
     marginRight: 10,
   },
+  smallText: {
+    fontSize: 12,
+  },
+  svg: {
+    width: '100%',
+    height: '100%',
+  }
 });
 
 export default globalStyles;

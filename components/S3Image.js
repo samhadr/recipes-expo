@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Storage } from "aws-amplify";
-
 import { Image } from 'react-native';
+
+import { Storage } from 'aws-amplify';
+
+import recipeStyles from '../styles/RecipeStyles';
 
 class S3Image extends Component {
   static propTypes = {
-    image: PropTypes.string
+    image: PropTypes.string,
+    imageStyle: PropTypes.string
   }
 
   constructor(props) {
@@ -37,12 +40,14 @@ class S3Image extends Component {
 
   render() {
     const { imageURL } = this.state;
+    const { imageStyle } = this.props;
+    console.log('imageStyle: ', imageStyle, typeof imageStyle);
     const imagePath = imageURL ? imageURL : 'none';
 
     return (
       <Image
         source={{ uri: imagePath }}
-        style={{ width: 50, height: 50 }}
+        style={ imageStyle === 'thumbnail' ? recipeStyles.recipeThumb : recipeStyles.recipeImg }
       />
     )
   }

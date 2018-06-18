@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {
   Text,
   View,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   Button,
@@ -70,8 +71,8 @@ class SignIn extends Component {
   render() {
     return (
       <View style={globalStyles.container}>
-        <Text style={globalStyles.heading}>Sign In</Text>
-        <View style={styles.formBox}>
+        <Text style={globalStyles.heading}>Sign in to your account:</Text>
+        <ScrollView style={styles.formBox}>
           <TextInput
             style={styles.textInput}
             value={this.state.email}
@@ -99,9 +100,9 @@ class SignIn extends Component {
             title="Sign In"
             accessibilityLabel="Sign in to your account"
           >
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
     );
   }

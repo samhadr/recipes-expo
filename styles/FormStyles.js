@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 3,
     color: '#000',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderBottomWidth: 2,
+    borderColor: '#ddd',
     borderRadius: 5,
   },
   inputHelper: {

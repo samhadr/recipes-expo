@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Button,
 } from 'react-native';
 
-import { WebBrowser } from 'expo';
+import { WebBrowser, Svg } from 'expo';
+const { Path } = Svg;
 
 import SignIn from './SignIn';
+import Logo from '../components/icons/Logo';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -20,7 +17,7 @@ import Colors from '../constants/Colors';
 
 class Welcome extends Component {
   static navigationOptions = {
-    title: 'Welcome',
+    header: null,
   };
 
   handleNav = (screen) => {
@@ -31,39 +28,29 @@ class Welcome extends Component {
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={globalStyles.container}>
+      <View style={[globalStyles.container, { backgroundColor: Colors.sageGreen }]}>
         <View style={globalStyles.centerContent}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={globalStyles.heading}>Welcome to Recipes</Text>
-            {/* <Button
-              title="Sign Up"
-              onPress={() => navigate('SignUp')}
-              style={formStyles.button}
-              color={Colors.sageGreen}
-            /> */}
+            <View style={{ width: 75, height: 75, marginBottom: 10 }}>
+              <Logo fill="#fff" />
+            </View>
+            <Text style={[globalStyles.heading, { color: '#fff' }]}>Welcome to Recipes</Text>
             <TouchableOpacity
-              style={[formStyles.button, formStyles.buttonFixedWidth]}
               onPress={() => navigate('SignUp')}
               title="Sign Up"
               accessibilityLabel="Sign Up"
             >
-              <Text style={formStyles.buttonText}>Sign Up</Text>
+              <Text style={[formStyles.buttonText, { color: 'gold' }]}>Sign Up</Text>
             </TouchableOpacity>
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
-            <Text style={globalStyles.heading}>Already have an account?</Text>
-            {/* <Button
-              title="Sign In"
-              onPress={() => navigate('SignIn')}
-              color={Colors.sageGreen}
-            /> */}
+            <Text style={[globalStyles.heading, { color: '#fff' }]}>Already have an account?</Text>
             <TouchableOpacity
-              style={[formStyles.button, formStyles.buttonFixedWidth]}
               onPress={() => navigate('SignIn')}
               title="Sign In"
               accessibilityLabel="Sign In"
             >
-              <Text style={formStyles.buttonText}>Sign In</Text>
+              <Text style={[formStyles.buttonText, { color: 'gold' }]}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>

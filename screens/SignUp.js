@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import Expo from 'expo';
 
 import {
   Text,
   View,
+  ScrollView,
   TextInput,
-  TouchableOpacity,
-  Button,
+  TouchableOpacity
 } from 'react-native';
 
 import { Auth } from "aws-amplify";
-
-import ConfirmSignUp from '../screens/ConfirmSignUp';
 
 import globalStyles from '../styles/GlobalStyles';
 import styles from '../styles/FormStyles';
@@ -69,8 +66,8 @@ class SignUp extends Component {
 
     return (
       <View style={globalStyles.container}>
-        <Text style={globalStyles.heading}>Sign up to create an account.</Text>
-        <View style={styles.formBox}>
+        <Text style={globalStyles.heading}>Sign up to create an account:</Text>
+        <ScrollView style={styles.formBox}>
           <TextInput
             style={styles.textInput}
             value={this.state.email}
@@ -99,9 +96,9 @@ class SignUp extends Component {
             title="Sign In"
             accessibilityLabel="Sign up to create an account"
           >
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
     );
   }

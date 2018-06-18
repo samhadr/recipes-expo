@@ -19,6 +19,7 @@ import { s3Upload, s3Delete } from '../libs/awsLib';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
+import recipeStyles from '../styles/RecipeStyles';
 
 class Recipe extends Component {
   static navigationOptions = {
@@ -249,36 +250,35 @@ class Recipe extends Component {
             {
               editMode
               ? <View>
-                  {attachmentURL
-                    ? <View>
-                        <Image
-                          style={{
-                            width: 100,
-                            height: 100,
-                          }}
-                          source={{ uri: attachmentURL }}
-                        />
-                        <TouchableOpacity
+                  <View style={recipeStyles.recipeHeader}>
+                    <TextInput
+                      style={[formStyles.textInput, recipeStyles.recipeHeaderTitle]}
+                      value={title}
+                      onChangeText={value => this.onChangeText('title', value)}
+                      placeholder={title}
+                      underlineColorAndroid="transparent"
+                    />
+                    {attachmentURL
+                      ? <View>
+                          <Image
+                            style={recipeStyles.recipeImg}
+                            source={{ uri: attachmentURL }}
+                          />
+                          <TouchableOpacity
+                            onPress={this.handleImageButton}
+                            title="Change image"
+                          >
+                            <Text>{"\uFF0B"} Change image</Text>
+                          </TouchableOpacity>
+                        </View>
+                      : <TouchableOpacity
                           onPress={this.handleImageButton}
-                          title="Change image"
+                          title="Add image"
                         >
-                          <Text>{"\uFF0B"} Change image</Text>
+                          <Text>{"\uFF0B"} Add image</Text>
                         </TouchableOpacity>
-                      </View>
-                    : <TouchableOpacity
-                        onPress={this.handleImageButton}
-                        title="Add image"
-                      >
-                        <Text>{"\uFF0B"} Add image</Text>
-                      </TouchableOpacity>
-                  }
-                  <TextInput
-                    style={formStyles.textInput}
-                    value={title}
-                    onChangeText={value => this.onChangeText('title', value)}
-                    placeholder={title}
-                    underlineColorAndroid="transparent"
-                  />
+                    }
+                  </View>
                   <TextInput
                     style={formStyles.textInput}
                     value={ingredients}
@@ -295,22 +295,23 @@ class Recipe extends Component {
                   />
                 </View>
               : <View>
-                  {attachmentURL
-                    ? <Image
-                        style={{
-                          width: 100,
-                          height: 100,
-                        }}
-                        source={{ uri: attachmentURL }}
-                      />
-                    : null
-                  }
-                  <Text>{title}</Text>
+                  <View style={recipeStyles.recipeHeader}>
+                    <View style={recipeStyles.recipeHeaderCopy}>
+                      <Text style={[globalStyles.heading, recipeStyles.recipeHeaderTitle]}>{title}</Text>
+                      <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text>
+                    </View>
+                    {attachmentURL
+                      ? <Image
+                          style={recipeStyles.recipeImg}
+                          source={{ uri: attachmentURL }}
+                        />
+                      : null
+                    }
+                  </View>
                   <Text>{ingredients}</Text>
                   <Text>{instructions}</Text>
                 </View>
             }
-            <Text>{"Created: " + new Date(date).toLocaleString()}</Text>
           </ScrollView>
           <View style={formStyles.formBox}>
             {toggleEditUpdate}
