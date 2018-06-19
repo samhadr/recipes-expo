@@ -96,22 +96,22 @@ class Recipe extends Component {
     this.setState({ isUpdating: true });
   
     try {
-      const attachment = this.state.imageObject
-        ? await s3Upload(this.state.imageObject)
-        : null;
-      await s3Delete(this.state.attachment);
-      await this.updateRecipe({
-        title: this.state.title,
-        ingredients: this.state.ingredients,
-        instructions: this.state.instructions,
-        attachment
-      });
-      let attachmentPath;
-      if (attachment) {
-        attachmentPath = await Storage.vault.get(attachment);
+      if (this.state.imageObject !== null) {
+        const newAttachment = await s3Upload(this.state.imageObject);
+        const attachmentPath = await Storage.vault.get(newAttachment);
+        await s3Delete(this.state.attachment);
+        this.setState({
+          attachment: newAttachment,
+          attachmentURL: attachmentPath
+        });
+        await this.updateRecipe({
+          title: this.state.title,
+          ingredients: this.state.ingredients,
+          instructions: this.state.instructions,
+          attachment: this.state.attachment
+        });
       }
       this.setState({
-        attachmentURL: attachmentPath,
         isUpdating: false,
         editMode: false
       });
@@ -225,93 +225,133 @@ class Recipe extends Component {
     });
   }
 
+  recipeHeader = () => {
+    const { editMode, title, date, attachmentURL } = this.state;
+
+    if (editMode) {
+      return (
+        <View style={recipeStyles.recipeHeader}>
+          <TextInput
+            style={[formStyles.textInput, recipeStyles.recipeHeaderCopy]}
+            value={title}
+            onChangeText={value => this.onChangeText('title', value)}
+            placeholder={title}
+            underlineColorAndroid="transparent"
+          />
+          {
+            attachmentURL
+            ? <View>
+                <Image
+                  style={recipeStyles.recipeImg}
+                  source={{ uri: attachmentURL }}
+                />
+                <TouchableOpacity
+                  onPress={this.handleImageButton}
+                  title="Change image"
+                >
+                  <Text>{"\uFF0B"} Change image</Text>
+                </TouchableOpacity>
+              </View>
+            : <TouchableOpacity
+                onPress={this.handleImageButton}
+                title="Add image"
+              >
+                <Text>{"\uFF0B"} Add image</Text>
+              </TouchableOpacity>
+          }
+        </View>
+      )
+    }
+    
+    return (
+      <View style={recipeStyles.recipeHeader}>
+        <View style={recipeStyles.recipeHeaderCopy}>
+          <Text style={[globalStyles.heading, recipeStyles.recipeHeaderTitle]}>{title}</Text>
+          <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text>
+        </View>
+        {
+          attachmentURL
+          ? <Image
+              style={recipeStyles.recipeImg}
+              source={{ uri: attachmentURL }}
+            />
+          : null
+        }
+      </View>
+    )
+  }
+
+  ingredients = () => {
+    const { editMode, ingredients } = this.state;
+    const ingredientsArr = ingredients.split(', ');
+    console.log('ingredientsArr: ', ingredientsArr);
+    let newIngredients = [];
+
+    for (i of ingredientsArr) {
+      if (editMode) {
+        return (
+          <TextInput
+            style={formStyles.textInput}
+            value={i}
+            onBlur={value => newIngredients.push(value)}
+            placeholder={i}
+            underlineColorAndroid="transparent"
+          />
+        )
+      }
+      return (
+        <Text>{i}</Text>
+      )
+    }
+  }
+
+  instructions = () => {
+    const { editMode, instructions } = this.state;
+
+    if (editMode) {
+      return (
+        <TextInput
+          style={formStyles.textInput}
+          multiline
+          numberOfLines={5}
+          value={instructions}
+          onChangeText={value => this.onChangeText('instructions', value)}
+          placeholder={instructions}
+          underlineColorAndroid="transparent"
+        />
+      )
+    }
+    return (
+      <Text>{instructions}</Text>
+    )
+  }
+
   render() {
     const {
-      title,
-      ingredients,
-      instructions,
-      date,
-      attachment,
-      attachmentURL,
-      newAttachment,
-      editMode
+      // ingredients,
+      // instructions,
+      // attachment,
+      // attachmentURL,
+      // newAttachment,
+      // editMode
     } = this.state;
+    const recipeHeader = this.recipeHeader();
+    const ingredients = this.ingredients();
+    const instructions = this.instructions();
     const toggleEditUpdate = this.editUpdateButton();
-    console.log('attachment: ', attachment, typeof attachment);
-    console.log('attachmentURL: ', attachmentURL, typeof attachmentURL);
+    console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
+    console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
     console.log('isUpdating: ', this.state.isUpdating);
     console.log('isDeleting: ', this.state.isDeleting);
-    console.log('newAttachment: ', newAttachment, typeof newAttachment);
+    console.log('newAttachment: ', this.state.newAttachment, typeof this.state.newAttachment);
 
     return (
       <View style={globalStyles.container}>
         <View style={globalStyles.content}>
           <ScrollView>
-            {
-              editMode
-              ? <View>
-                  <View style={recipeStyles.recipeHeader}>
-                    <TextInput
-                      style={[formStyles.textInput, recipeStyles.recipeHeaderTitle]}
-                      value={title}
-                      onChangeText={value => this.onChangeText('title', value)}
-                      placeholder={title}
-                      underlineColorAndroid="transparent"
-                    />
-                    {attachmentURL
-                      ? <View>
-                          <Image
-                            style={recipeStyles.recipeImg}
-                            source={{ uri: attachmentURL }}
-                          />
-                          <TouchableOpacity
-                            onPress={this.handleImageButton}
-                            title="Change image"
-                          >
-                            <Text>{"\uFF0B"} Change image</Text>
-                          </TouchableOpacity>
-                        </View>
-                      : <TouchableOpacity
-                          onPress={this.handleImageButton}
-                          title="Add image"
-                        >
-                          <Text>{"\uFF0B"} Add image</Text>
-                        </TouchableOpacity>
-                    }
-                  </View>
-                  <TextInput
-                    style={formStyles.textInput}
-                    value={ingredients}
-                    onChangeText={value => this.onChangeText('ingredients', value)}
-                    placeholder={ingredients}
-                    underlineColorAndroid="transparent"
-                  />
-                  <TextInput
-                    style={formStyles.textInput}
-                    value={instructions}
-                    onChangeText={value => this.onChangeText('instructions', value)}
-                    placeholder={instructions}
-                    underlineColorAndroid="transparent"
-                  />
-                </View>
-              : <View>
-                  <View style={recipeStyles.recipeHeader}>
-                    <View style={recipeStyles.recipeHeaderCopy}>
-                      <Text style={[globalStyles.heading, recipeStyles.recipeHeaderTitle]}>{title}</Text>
-                      <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text>
-                    </View>
-                    {attachmentURL
-                      ? <Image
-                          style={recipeStyles.recipeImg}
-                          source={{ uri: attachmentURL }}
-                        />
-                      : null
-                    }
-                  </View>
-                  <Text>{ingredients}</Text>
-                  <Text>{instructions}</Text>
-                </View>
-            }
+            {recipeHeader}
+            {ingredients}
+            {instructions}
           </ScrollView>
           <View style={formStyles.formBox}>
             {toggleEditUpdate}
