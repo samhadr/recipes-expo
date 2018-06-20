@@ -17,9 +17,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     backgroundColor: '#fff',
-    // height: 30,
     marginBottom: 15,
-    padding: 3,
+    padding: 10,
+    fontSize: 20,
     color: '#000',
     borderBottomWidth: 2,
     borderColor: '#ddd',
@@ -35,15 +35,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.sageGreen,
     marginBottom: 10,
-    padding: 5,
-    paddingBottom: 8,
+    padding: 15,
+    paddingBottom: 18,
     borderRadius: 3,
   },
   buttonFixedWidth: {
     width: 140,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 24,
     color: '#fff',
   },
 });

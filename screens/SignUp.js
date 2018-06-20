@@ -11,7 +11,7 @@ import {
 import { Auth } from "aws-amplify";
 
 import globalStyles from '../styles/GlobalStyles';
-import styles from '../styles/FormStyles';
+import formStyles from '../styles/FormStyles';
 
 class SignUp extends Component {
   static navigationOptions = {
@@ -67,9 +67,9 @@ class SignUp extends Component {
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Sign up to create an account:</Text>
-        <ScrollView style={styles.formBox}>
+        <ScrollView style={formStyles.formBox}>
           <TextInput
-            style={styles.textInput}
+            style={formStyles.textInput}
             value={this.state.email}
             onChangeText={value => this.onChangeText('email', value)}
             placeholder="Email"
@@ -78,25 +78,25 @@ class SignUp extends Component {
             autoFocus={true}
             keyboardType="email-address"
           />
-          <Text style={styles.inputHelper}>Your email will be your username.</Text>
+          <Text style={formStyles.inputHelper}>Your email will be your username.</Text>
           <TextInput
-            style={styles.textInput}
+            style={formStyles.textInput}
             value={this.state.password}
             onChangeText={value => this.onChangeText('password', value)}
             placeholder="Password"
             underlineColorAndroid="transparent"
             secureTextEntry={true}
           />
-          <Text style={styles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>
+          <Text style={formStyles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>
           {this.state.showSignUpError ? <Text style={globalStyles.error}>{this.state.signUpError}</Text> : null}
           <TouchableOpacity
             type="submit"
-            style={styles.button}
+            style={formStyles.button}
             onPress={this.signUp}
             title="Sign In"
             accessibilityLabel="Sign up to create an account"
           >
-            <Text style={styles.buttonText}>Submit</Text>
+            <Text style={formStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

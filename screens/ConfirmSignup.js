@@ -15,7 +15,7 @@ import { Auth } from "aws-amplify";
 import SignIn from '../screens/SignIn';
 
 import globalStyles from '../styles/GlobalStyles';
-import styles from '../styles/FormStyles';
+import formStyles from '../styles/FormStyles';
 
 class ConfirmSignUp extends Component {
   static navigationOptions = {
@@ -66,17 +66,15 @@ class ConfirmSignUp extends Component {
   }
 
   render() {
-    const { signUpData } = this.props;
-
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Confirm your account.</Text>
-        <View style={styles.formBox}>
+        <View style={formStyles.formBox}>
           <Text>Your account has been created! You were sent a confirmation code to the email associated with your new account.</Text>
           <Text>Enter your confirmation code:</Text>
-          <View style={styles.formBox}>
+          <View style={formStyles.formBox}>
             <TextInput
-              style={styles.textInput}
+              style={formStyles.textInput}
               value={this.state.confirmationCode}
               onChangeText={value => this.onChangeText('confirmationCode', value)}
               placeholder="Confirmation Code"
@@ -85,12 +83,12 @@ class ConfirmSignUp extends Component {
             {this.state.showConfirmError ? <Text style={globalStyles.error}>{this.state.confirmError}</Text> : null}
             <TouchableOpacity
               type="submit"
-              style={styles.button}
+              style={formStyles.button}
               onPress={this.confirmSignUp}
               title="Confirm Sign In"
               accessibilityLabel="Confirm sign up to create your account"
             >
-              <Text style={styles.buttonText}>Confirm Sign Up</Text>
+              <Text style={formStyles.buttonText}>Confirm Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>

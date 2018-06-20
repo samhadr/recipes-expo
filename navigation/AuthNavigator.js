@@ -4,6 +4,7 @@ import Welcome from '../screens/Welcome';
 import SignUp from '../screens/SignUp';
 import ConfirmSignUp from '../screens/ConfirmSignUp';
 import SignIn from '../screens/SignIn';
+import ForgotPassword from '../screens/ForgotPassword';
 
 import Colors from '../constants/Colors';
 
@@ -20,6 +21,9 @@ export default createStackNavigator(
     },
     SignIn: {
       screen: SignIn,
+    },
+    ForgotPassword: {
+      screen: ForgotPassword,
     },
   },
   {

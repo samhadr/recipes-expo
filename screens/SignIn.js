@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// import Expo from 'expo';
-import PropTypes from 'prop-types';
 
 import {
   Text,
@@ -8,10 +6,11 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Button,
 } from 'react-native';
 
-import { Auth } from "aws-amplify";
+import { Auth } from 'aws-amplify';
+
+import ForgotPassword from './ForgotPassword';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -68,6 +67,14 @@ class SignIn extends Component {
   //   this.props.navigation.navigate('Search');
   // }
 
+  forgotPassword = () => {
+    Auth.forgotPassword(this.state.email)
+      .then(data => {
+        console.log('data: ', data);
+        Object.keys(data).length > 0 ? this.props.navigation.navigate('ForgotPassword', { emailAddress: this.state.email }) : null;
+      })
+  }
+
   render() {
     return (
       <View style={globalStyles.container}>
@@ -101,6 +108,15 @@ class SignIn extends Component {
             accessibilityLabel="Sign in to your account"
           >
             <Text style={formStyles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            type="submit"
+            // style={formStyles.button}
+            onPress={this.forgotPassword}
+            title="Forgot Password?"
+            accessibilityLabel="Forgot Password?"
+          >
+            <Text style={[formStyles.buttonText, { color: 'black' }]}>Forgot Password?</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
