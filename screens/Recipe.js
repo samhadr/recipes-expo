@@ -39,7 +39,7 @@ class Recipe extends Component {
     this.state = {
       isLoading: true,
       title: '',
-      ingredients: '',
+      ingredients: null,
       instructions: '',
       date: 0,
       id: '',
@@ -55,6 +55,7 @@ class Recipe extends Component {
 
   componentDidMount() {
     this.setRecipe();
+    console.log('mounted ingredients: ', this.state.ingredients);
   }
 
   setRecipe = async () => {
@@ -78,6 +79,16 @@ class Recipe extends Component {
     this.setState({
       [key]: value
     });
+  }
+
+  onChangeIngredient = (key, value) => {
+    this.setState(prevState => ({
+      ingredients: {
+        ...prevState.ingredients[i],
+        key: value
+      }
+    }))
+    console.log('key: value = ', ingredients[key]+ ':' +value);
   }
 
   handleUpdate = async () => {
@@ -283,26 +294,46 @@ class Recipe extends Component {
 
   ingredients = () => {
     const { editMode, ingredients } = this.state;
-    const ingredientsArr = ingredients.split(', ');
-    console.log('ingredientsArr: ', ingredientsArr);
-    let newIngredients = [];
-
-    for (i of ingredientsArr) {
+    // const newIngredients = new Object(ingredients);
+    console.log('ingredients: ', ingredients, typeof ingredients);
+    // console.log('newIngredients: ', newIngredients, typeof newIngredients);
+    return [].concat(ingredients).map((ingredient, index) => {
+      console.log('ingredient.unit: ', ingredient.unit);
       if (editMode) {
         return (
-          <TextInput
-            style={formStyles.textInput}
-            value={i}
-            onBlur={value => newIngredients.push(value)}
-            placeholder={i}
-            underlineColorAndroid="transparent"
-          />
+          <View key={index} style={{ flexDirection: 'row' }}>
+            <TextInput
+              style={formStyles.textInput}
+              value={ingredient.amount}
+              onBlur={value => ingredient.amount = value}
+              placeholder={ingredient.amount}
+              underlineColorAndroid="transparent"
+            />
+            <TextInput
+              style={formStyles.textInput}
+              value={ingredient.unit}
+              onSubmitEditing={value => ingredients[index]["unit"] = value}
+              placeholder={ingredient.unit}
+              underlineColorAndroid="transparent"
+            />
+            <TextInput
+              style={formStyles.textInput}
+              value={ingredient.name}
+              onBlur={value => ingredient.name = value}
+              placeholder={ingredient.name}
+              underlineColorAndroid="transparent"
+            />
+          </View>
         )
       }
       return (
-        <Text>{i}</Text>
+        <View key={index} style={{ flexDirection: 'row' }}>
+          <Text>{ingredient.amount}</Text>
+          <Text>{ingredient.unit}</Text>
+          <Text>{ingredient.name}</Text>
+        </View>
       )
-    }
+    });
   }
 
   instructions = () => {
@@ -336,7 +367,7 @@ class Recipe extends Component {
       // editMode
     } = this.state;
     const recipeHeader = this.recipeHeader();
-    const ingredients = this.ingredients();
+    const ingredients = this.state.ingredients ? this.ingredients() : null;
     const instructions = this.instructions();
     const toggleEditUpdate = this.editUpdateButton();
     console.log('attachment: ', this.state.attachment, typeof this.state.attachment);

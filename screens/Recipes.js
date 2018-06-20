@@ -107,6 +107,7 @@ class Recipes extends Component {
 
   render() {
     const { recipesData } = this.state;
+    console.log('recipesData: ', recipesData);
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (

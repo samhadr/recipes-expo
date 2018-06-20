@@ -1,8 +1,26 @@
 {
-  "body": "{\"title\":\"Recipe Title 01\",\"ingredients\":\"ingredient 01, ingredient 02, ingredient 03\",\"instructions\":\"Mix all ingredients together, pour into a bowl, and serve.\",\"attachment\":\"hello.jpg\"}",
+  "body": "{\"title\":\"Cereal 02\",\"ingredients\": [{\"name\": \"Your favorite cereal\", \"amount\": \"2\", \"unit\": \"cups\"}, {\"name\": \"Milk\", \"amount\": \"1.5\", \"unit\": \"Cups\"}],\"instructions\":\"Add cereal to a bowl. Pour in milk. Serve and eat immediately so cereal does not get soggy.\",\"attachment\": null}",
   "requestContext": {
     "identity": {
       "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
     }
   }
 }
+
+{
+  "body": "{\"title\":\"Guacamole 02\",\"ingredients\": [{\"name\": \"Avocados\", \"amount\": \"3\", \"unit\": \"each\"}, {\"name\": \"Red Onion - diced\", \"amount\": \"1/4\", \"unit\": \"Cup\"}, {\"name\": \"Lime Juice\", \"amount\": \"3\", \"unit\": \"Tablespoons\"}, {\"name\": \"Cilantro - chopped finely\", \"amount\": \"4\", \"unit\": \"Tablespoons\"}, {\"name\": \"Salt & Pepper to taste\", \"amount\": null, \"unit\": null}],\"instructions\":\"Cut each avocado in half, remove stone with a knife, and scoop out meat with a spoon into a medium sized bowl. With the spoon, chop up the avocado until chunky and soft. Dice red onion finely and add to avocado. Add lime juice, add cilantro, add salt and pepper. Mix well and serve with your favorite tortilla chips.\",\"attachment\": null}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
+    }
+  }
+}
+
+{
+  "body": "{\"title\":\"PB&J 02\",\"ingredients\": [{\"name\": \"Peanut Butter\", \"amount\": \"4\", \"unit\": \"Tablespoons\"}, {\"name\": \"Jelly\", \"amount\": \"3\", \"unit\": \"Tablespoons\"}, {\"name\": \"Bread\", \"amount\": \"2\", \"unit\": \"slice\"}],\"instructions\":\"Spread peanut butter on one slice of bread. Spread jelly on the other slice of bread. Put peanut butter and jelly sides of bread together, cut in half diagonally, and serve.\",\"attachment\": null}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
+    }
+  }
+},
