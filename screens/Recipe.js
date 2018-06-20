@@ -81,14 +81,21 @@ class Recipe extends Component {
     });
   }
 
-  onChangeIngredient = (key, value) => {
-    this.setState(prevState => ({
-      ingredients: {
-        ...prevState.ingredients[i],
-        key: value
-      }
-    }))
-    console.log('key: value = ', ingredients[key]+ ':' +value);
+  onChangeIngredient = (i, key, value) => {
+    const { ingredients } = this.state;
+    if (ingredients) {
+      const newIngredients = ingredients.slice();
+      console.log('newIngredients: ', newIngredients);
+      console.log('i: ', i);
+      console.log('key: ', key);
+      console.log('value: ', value);
+      newIngredients[i][key] = value;
+      this.setState({
+        ingredients: newIngredients
+      });
+      // console.log('key: value = ', newIngredients[i].key + ':' + value);
+      console.log('newIngredients after assign: ', newIngredients);
+    }
   }
 
   handleUpdate = async () => {
@@ -115,13 +122,13 @@ class Recipe extends Component {
           attachment: newAttachment,
           attachmentURL: attachmentPath
         });
-        await this.updateRecipe({
-          title: this.state.title,
-          ingredients: this.state.ingredients,
-          instructions: this.state.instructions,
-          attachment: this.state.attachment
-        });
       }
+      await this.updateRecipe({
+        title: this.state.title,
+        ingredients: this.state.ingredients,
+        instructions: this.state.instructions,
+        attachment: this.state.attachment
+      });
       this.setState({
         isUpdating: false,
         editMode: false
@@ -294,38 +301,38 @@ class Recipe extends Component {
 
   ingredients = () => {
     const { editMode, ingredients } = this.state;
-    // const newIngredients = new Object(ingredients);
     console.log('ingredients: ', ingredients, typeof ingredients);
-    // console.log('newIngredients: ', newIngredients, typeof newIngredients);
-    return [].concat(ingredients).map((ingredient, index) => {
+    return [{}].concat(ingredients).map((ingredient, index) => {
       console.log('ingredient.unit: ', ingredient.unit);
-      if (editMode) {
+      if (editMode && index > 0) {
+        console.log('index: ', index);
         return (
           <View key={index} style={{ flexDirection: 'row' }}>
             <TextInput
               style={formStyles.textInput}
               value={ingredient.amount}
-              onBlur={value => ingredient.amount = value}
-              placeholder={ingredient.amount}
+              onChangeText={value => this.onChangeIngredient((index -1), 'amount', value)}
+              placeholder={ingredient.amount ? ingredient.amount : 'amount'}
               underlineColorAndroid="transparent"
             />
             <TextInput
               style={formStyles.textInput}
               value={ingredient.unit}
-              onSubmitEditing={value => ingredients[index]["unit"] = value}
-              placeholder={ingredient.unit}
+              onChangeText={value => this.onChangeIngredient((index -1), 'unit', value)}
+              placeholder={ingredient.unit ? ingredient.unit : 'unit'}
               underlineColorAndroid="transparent"
             />
             <TextInput
               style={formStyles.textInput}
               value={ingredient.name}
-              onBlur={value => ingredient.name = value}
-              placeholder={ingredient.name}
+              onChangeText={value => this.onChangeIngredient((index -1), 'name', value)}
+              placeholder={ingredient.name ? ingredient.name : 'name'}
               underlineColorAndroid="transparent"
             />
           </View>
         )
       }
+      console.log('index: ', index);
       return (
         <View key={index} style={{ flexDirection: 'row' }}>
           <Text>{ingredient.amount}</Text>

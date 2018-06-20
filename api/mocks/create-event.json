@@ -23,4 +23,13 @@
       "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
     }
   }
-},
+}
+
+{
+  "body": "{\"title\":\"Bagel & Lox\",\"ingredients\": [{\"name\": \"Bagel\", \"amount\": \"1\", \"unit\": \"each\"}, {\"name\": \"Lox\", \"amount\": \"1\", \"unit\": \"ounce\"}, {\"name\": \"Cream cheese\", \"amount\": \"3\", \"unit\": \"tablespoons\"}, {\"name\": \"Red onion - thin sliced\", \"amount\": \"4\", \"unit\": \"grams\"}, {\"name\": \"Capers\", \"amount\": \"2\", \"unit\": \"tablespoons\"}],\"instructions\":\"Toast bagel, then spread cream cheese on both sides. Sprinkle capers on the cream cheese so they stick. Place red onion and lox on top of capers. Place top of bagel on the rest. Cut in half and serve.\",\"attachment\": null}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "57d171e2-7304-4756-ac65-36e87c45866c"
+    }
+  }
+}
