@@ -10,10 +10,11 @@ const globalStyles = StyleSheet.create({
     height: '100%',
     padding: 15,
   },
-  content: {
-    flex: 12,
-    padding: 10,
-  },
+  // content: {
+  //   // flex: 1,
+  //   // height: '100%',
+  //   padding: 10,
+  // },
   centerContent: {
     alignItems: 'center',
   },

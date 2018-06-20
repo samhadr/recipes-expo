@@ -176,8 +176,20 @@ class Recipe extends Component {
       this.setState({ isDeleting: false });
       this.props.navigation.goBack();
     } catch (e) {
-      alert(e);
+      console.log('handleDelete error: ', e);
       this.setState({ isDeleting: false });
+    }
+  }
+
+  deleteImage = async () => {
+    try {
+      await s3Delete(this.state.attachment);
+      this.setState({
+        attachment: '',
+        attachmentURL: ''
+      });
+    } catch (e) {
+      console.log('deleteImage error: ', e);
     }
   }
 
@@ -247,6 +259,7 @@ class Recipe extends Component {
     const { editMode, title, date, attachmentURL } = this.state;
 
     if (editMode) {
+      console.log('recipeHeader attachmentURL: ', attachmentURL);
       return (
         <View style={recipeStyles.recipeHeader}>
           <TextInput
@@ -268,6 +281,12 @@ class Recipe extends Component {
                   title="Change image"
                 >
                   <Text>{"\uFF0B"} Change image</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this.deleteImage}
+                  title="Delete image"
+                >
+                  <Text>{"\uFF0B"} Delete image</Text>
                 </TouchableOpacity>
               </View>
             : <TouchableOpacity
@@ -385,24 +404,22 @@ class Recipe extends Component {
 
     return (
       <View style={globalStyles.container}>
-        <View style={globalStyles.content}>
-          <ScrollView>
-            {recipeHeader}
-            {ingredients}
-            {instructions}
-          </ScrollView>
-          <View style={formStyles.formBox}>
-            {toggleEditUpdate}
-            <TouchableOpacity
-              type="submit"
-              style={formStyles.button}
-              onPress={this.confirmDelete}
-              title="Delete Recipe"
-              accessibilityLabel="Delete Recipe"
-            >
-              <Text style={formStyles.buttonText}>Delete Recipe</Text>
-            </TouchableOpacity>
-          </View>
+        <ScrollView>
+          {recipeHeader}
+          {ingredients}
+          {instructions}
+        </ScrollView>
+        <View style={formStyles.formBox}>
+          {toggleEditUpdate}
+          <TouchableOpacity
+            type="submit"
+            style={formStyles.button}
+            onPress={this.confirmDelete}
+            title="Delete Recipe"
+            accessibilityLabel="Delete Recipe"
+          >
+            <Text style={formStyles.buttonText}>Delete Recipe</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

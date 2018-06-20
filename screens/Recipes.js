@@ -15,7 +15,6 @@ import S3Image from '../components/S3Image';
 import Logo from '../components/icons/Logo';
 
 import globalStyles from '../styles/GlobalStyles';
-import styles from '../styles/HomeStyles';
 import recipeStyles from '../styles/RecipeStyles';
 
 import Colors from '../constants/Colors';
@@ -74,27 +73,27 @@ class Recipes extends Component {
   renderRecipes(recipes) {
     return [{}].concat(recipes).map((recipe, i) =>
       i !== 0
-        ? <View
-            key={recipe.recipeId}
-            style={recipeStyles.recipeListing}
-          >
-          {
-            recipe.attachment !== null
-            ? <S3Image
-                image={recipe.attachment}
-                imageStyle="thumbnail"
-              />
-            : <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.sageGreen, width: 50, height: 50, marginRight: 10, padding: 10 }}>
-                <Logo fill="#fff" />
-              </View>
-            }
+        ? <View key={recipe.recipeId}>
             <TouchableOpacity
               onPress={this.handleRecipeClick.bind(this, recipe)}
               title={recipe.title}
               id={recipe.recipeId}
+              style={recipeStyles.recipeListing}
             >
-              <Text style={globalStyles.heading}>{recipe.title}</Text>
-              <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text>
+              {
+                recipe.attachment !== null
+                ? <S3Image
+                    image={recipe.attachment}
+                    imageStyle="thumbnail"
+                  />
+                : <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.sageGreen, width: 50, height: 50, marginRight: 10, padding: 10 }}>
+                    <Logo fill="#fff" />
+                  </View>
+              }
+              <View>
+                <Text style={globalStyles.heading}>{recipe.title}</Text>
+                <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text>
+              </View>
             </TouchableOpacity>
           </View>
         : null
@@ -111,9 +110,8 @@ class Recipes extends Component {
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (
-      <ScrollView>
-        <View style={globalStyles.container}>
-          <View style={styles.content}>
+      <View style={globalStyles.container}>
+        <ScrollView>
             <TouchableOpacity
               onPress={() => this.props.navigation.push('CreateRecipe')}
               title="Create a new recipe"
@@ -122,9 +120,8 @@ class Recipes extends Component {
               <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Recipe</Text>
             </TouchableOpacity>
             {showRecipes}
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 

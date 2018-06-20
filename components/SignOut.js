@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import { Auth } from 'aws-amplify';
@@ -29,11 +29,13 @@ class SignOut extends Component {
 
   render() {
     return (
-      <Button
+      <TouchableOpacity
         onPress={this.signOut}
         title="Sign Out"
-        color="white"
-      />
+        accessibilityLabel="Sign Out"
+      >
+        <Text style={{ color: 'white' }}>Sign Out</Text>
+      </TouchableOpacity>
     );
   }
 

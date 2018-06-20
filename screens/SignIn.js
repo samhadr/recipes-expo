@@ -14,7 +14,7 @@ import {
 import { Auth } from "aws-amplify";
 
 import globalStyles from '../styles/GlobalStyles';
-import styles from '../styles/FormStyles';
+import formStyles from '../styles/FormStyles';
 
 class SignIn extends Component {
   static navigationOptions = {
@@ -72,9 +72,9 @@ class SignIn extends Component {
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Sign in to your account:</Text>
-        <ScrollView style={styles.formBox}>
+        <ScrollView style={formStyles.formBox}>
           <TextInput
-            style={styles.textInput}
+            style={formStyles.textInput}
             value={this.state.email}
             onChangeText={value => this.onChangeText('email', value)}
             placeholder="Email"
@@ -84,7 +84,7 @@ class SignIn extends Component {
             keyboardType="email-address"
           />
           <TextInput
-            style={styles.textInput}
+            style={formStyles.textInput}
             value={this.state.password}
             onChangeText={value => this.onChangeText('password', value)}
             placeholder="Password"
@@ -95,12 +95,12 @@ class SignIn extends Component {
           {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null}
           <TouchableOpacity
             type="submit"
-            style={styles.button}
+            style={formStyles.button}
             onPress={this.signIn}
             title="Sign In"
             accessibilityLabel="Sign in to your account"
           >
-            <Text style={styles.buttonText}>Submit</Text>
+            <Text style={formStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

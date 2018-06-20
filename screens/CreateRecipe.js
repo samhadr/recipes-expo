@@ -131,7 +131,6 @@ class CreateRecipe extends Component {
 
     return (
       <View style={globalStyles.container}>
-        <View style={globalStyles.content}>
         <View style={formStyles.formBox}>
           <TextInput
             style={formStyles.textInput}
@@ -179,7 +178,6 @@ class CreateRecipe extends Component {
           >
             <Text style={formStyles.buttonText}>Create Recipe</Text>
           </TouchableOpacity>
-        </View>
         </View>
       </View>
     );
