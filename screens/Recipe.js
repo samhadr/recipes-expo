@@ -8,12 +8,13 @@ import {
   ScrollView,
   Alert,
   Image,
-  Platform
+  Platform,
+  ListView,
 } from 'react-native';
 
 import { API, Storage } from 'aws-amplify';
 
-import { ImagePicker, Permissions, FileSystem } from 'expo';
+import { ImagePicker, Permissions, FileSystem, LinearGradient } from 'expo';
 
 import { s3Upload, s3Delete } from '../libs/awsLib';
 
@@ -22,6 +23,8 @@ import formStyles from '../styles/FormStyles';
 import recipeStyles from '../styles/RecipeStyles';
 
 import Colors from '../constants/Colors';
+
+import { Ionicons } from '@expo/vector-icons';
 
 class Recipe extends Component {
   static navigationOptions = {
@@ -59,7 +62,6 @@ class Recipe extends Component {
 
   componentDidMount() {
     this.setRecipe();
-    console.log('mounted ingredients: ', this.state.ingredients);
   }
 
   setRecipe = async () => {
@@ -89,25 +91,25 @@ class Recipe extends Component {
     const { ingredients } = this.state;
     if (ingredients) {
       const newIngredients = ingredients.slice();
-      console.log('newIngredients: ', newIngredients);
-      console.log('i: ', i);
-      console.log('key: ', key);
-      console.log('value: ', value);
+      // console.log('newIngredients: ', newIngredients);
+      // console.log('i: ', i);
+      // console.log('key: ', key);
+      // console.log('value: ', value);
       newIngredients[i][key] = value;
       this.setState({
         ingredients: newIngredients
       });
-      // console.log('key: value = ', newIngredients[i].key + ':' + value);
-      console.log('newIngredients after assign: ', newIngredients);
+      // console.log('key: value = ', newIngredients[i][key] + ':' + value);
+      // console.log('newIngredients after assign: ', newIngredients);
     }
   }
 
   handleUpdate = async () => {
-    console.log('handle update');
+    // console.log('handle update');
   
     if (this.state.newAttachment) {
       let fileInfo = await FileSystem.getInfoAsync(this.state.newAttachment, { size: true });
-      console.log('file size: ', fileInfo.size);
+      // console.log('file size: ', fileInfo.size);
     
       if (this.state.imageObject && (fileInfo.size > config.s3.MAX_FILE_SIZE)) {
         alert("Please choose a file smaller than 5MB");
@@ -151,12 +153,12 @@ class Recipe extends Component {
 
   deleteRecipe() {
     const { id } = this.state;
-    console.log('recipe to delete: ', id);
+    // console.log('recipe to delete: ', id);
     return API.del('recipes', `/recipes/${id}`);
   }
 
   confirmDelete = () => {
-    console.log('confirm delete');
+    // console.log('confirm delete');
     Alert.alert(
       'Delete Recipe',
       'Are you sure you want to delete this recipe?',
@@ -170,7 +172,7 @@ class Recipe extends Component {
   }
   
   handleDelete = async () => {
-    console.log('handle delete');
+    // console.log('handle delete');
   
     this.setState({ isDeleting: true });
   
@@ -259,13 +261,58 @@ class Recipe extends Component {
     });
   }
 
-  recipeHeader = () => {
-    const { editMode, title, date, attachmentURL } = this.state;
+  recipeImage = () => {
+    const { editMode, attachmentURL } = this.state;
 
     if (editMode) {
-      console.log('recipeHeader attachmentURL: ', attachmentURL);
+      return (
+        attachmentURL
+        ? <View>
+            <Image
+              style={recipeStyles.recipeImg}
+              source={{ uri: attachmentURL }}
+            />
+            <TouchableOpacity
+              onPress={this.handleImageButton}
+              title="Change image"
+            >
+              <Text>{"\uFF0B"} Change image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.deleteImage}
+              title="Delete image"
+            >
+              <Text>{"\uFF0B"} Delete image</Text>
+            </TouchableOpacity>
+          </View>
+        : <TouchableOpacity
+            onPress={this.handleImageButton}
+            title="Add image"
+          >
+            <Text>{"\uFF0B"} Add image</Text>
+          </TouchableOpacity>
+      )
+    }
+    return (
+      attachmentURL
+      ? <Image
+          style={recipeStyles.recipeHeaderImg}
+          source={{ uri: attachmentURL }}
+          resizeMode={'cover'}
+        />
+      : null
+    )
+  }
+
+  recipeHeader = () => {
+    const { editMode, title, date, attachmentURL } = this.state;
+    const recipeImage = this.recipeImage();
+
+    if (editMode) {
+      // console.log('recipeHeader attachmentURL: ', attachmentURL);
       return (
         <View style={recipeStyles.recipeHeader}>
+          {recipeImage}
           <TextInput
             style={[formStyles.textInput, recipeStyles.recipeHeaderCopy]}
             value={title}
@@ -273,80 +320,77 @@ class Recipe extends Component {
             placeholder={title}
             underlineColorAndroid="transparent"
           />
-          {
-            attachmentURL
-            ? <View>
-                <Image
-                  style={recipeStyles.recipeImg}
-                  source={{ uri: attachmentURL }}
-                />
-                <TouchableOpacity
-                  onPress={this.handleImageButton}
-                  title="Change image"
-                >
-                  <Text>{"\uFF0B"} Change image</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={this.deleteImage}
-                  title="Delete image"
-                >
-                  <Text>{"\uFF0B"} Delete image</Text>
-                </TouchableOpacity>
-              </View>
-            : <TouchableOpacity
-                onPress={this.handleImageButton}
-                title="Add image"
-              >
-                <Text>{"\uFF0B"} Add image</Text>
-              </TouchableOpacity>
-          }
         </View>
       )
     }
     
     return (
       <View style={recipeStyles.recipeHeader}>
-        <View style={recipeStyles.recipeHeaderCopy}>
-          <Text style={[globalStyles.heading, recipeStyles.recipeHeaderTitle]}>{title}</Text>
-          <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text>
+        {recipeImage}
+        <View style={{ width: '100%' }}>
+          <LinearGradient
+            colors={['transparent', '#000']}
+            start={[0, 0]}
+            end={[0, 1]}
+            style={recipeStyles.recipeHeaderContent}
+          >
+            {/* <View style={recipeStyles.recipeHeaderCopy}> */}
+              <Text style={[globalStyles.heading, recipeStyles.recipeHeaderCopy]}>{title}</Text>
+              <View style={recipeStyles.recipeHeaderButtons}>
+                <TouchableOpacity
+                  type="submit"
+                  style={recipeStyles.recipeHeaderButton}
+                  onPress={this.handleEdit}
+                  title="Edit Recipe"
+                  accessibilityLabel="Edit Recipe"
+                >
+                  <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={15} color={'white'} />
+                  <Text style={{ color: 'white' }}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  type="submit"
+                  style={recipeStyles.recipeHeaderButton}
+                  onPress={this.confirmDelete}
+                  title="Delete Recipe"
+                  accessibilityLabel="Delete Recipe"
+                >
+                  <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={15} color={'white'} />
+                  <Text style={{ color: 'white' }}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            {/* </View> */}
+          </LinearGradient>
+          {/* <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text> */}
         </View>
-        {
-          attachmentURL
-          ? <Image
-              style={recipeStyles.recipeImg}
-              source={{ uri: attachmentURL }}
-            />
-          : null
-        }
       </View>
     )
   }
 
   ingredients = () => {
     const { editMode, ingredients } = this.state;
-    console.log('ingredients: ', ingredients, typeof ingredients);
+    // console.log('ingredients: ', ingredients, typeof ingredients);
     return [{}].concat(ingredients).map((ingredient, index) => {
-      console.log('ingredient.unit: ', ingredient.unit);
+      // console.log('ingredient.unit: ', ingredient.unit);
       if (editMode && index > 0) {
-        console.log('index: ', index);
+        // console.log('index: ', index);
         return (
           <View key={index} style={{ flexDirection: 'row' }}>
             <TextInput
-              style={formStyles.textInput}
+              style={[formStyles.textInput, formStyles.textEdit]}
               value={ingredient.amount}
               onChangeText={value => this.onChangeIngredient((index -1), 'amount', value)}
               placeholder={ingredient.amount ? ingredient.amount : 'amount'}
               underlineColorAndroid="transparent"
             />
             <TextInput
-              style={formStyles.textInput}
+              style={[formStyles.textInput, formStyles.textEdit]}
               value={ingredient.unit}
               onChangeText={value => this.onChangeIngredient((index -1), 'unit', value)}
               placeholder={ingredient.unit ? ingredient.unit : 'unit'}
               underlineColorAndroid="transparent"
             />
             <TextInput
-              style={formStyles.textInput}
+              style={[formStyles.textInput, formStyles.textEdit]}
               value={ingredient.name}
               onChangeText={value => this.onChangeIngredient((index -1), 'name', value)}
               placeholder={ingredient.name ? ingredient.name : 'name'}
@@ -355,14 +399,13 @@ class Recipe extends Component {
           </View>
         )
       }
-      console.log('index: ', index);
-      return (
-        <View key={index} style={{ flexDirection: 'row' }}>
-          <Text>{ingredient.amount}</Text>
-          <Text>{ingredient.unit}</Text>
-          <Text>{ingredient.name}</Text>
-        </View>
-      )
+      if (index > 0) {
+        return (
+          <Text key={index}>
+            {ingredient.amount ? ingredient.amount : null} {ingredient.unit ? ingredient.unit : null} {ingredient.name}
+          </Text>
+        )
+      }
     });
   }
 
@@ -396,36 +439,45 @@ class Recipe extends Component {
       // newAttachment,
       // editMode
     } = this.state;
+    // const recipeImage = this.recipeImage();
     const recipeHeader = this.recipeHeader();
     const ingredients = this.state.ingredients ? this.ingredients() : null;
     const instructions = this.instructions();
     const toggleEditUpdate = this.editUpdateButton();
-    console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
-    console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
-    console.log('isUpdating: ', this.state.isUpdating);
-    console.log('isDeleting: ', this.state.isDeleting);
-    console.log('newAttachment: ', this.state.newAttachment, typeof this.state.newAttachment);
+    // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
+    // console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
+    // console.log('isUpdating: ', this.state.isUpdating);
+    // console.log('isDeleting: ', this.state.isDeleting);
+    // console.log('newAttachment: ', this.state.newAttachment, typeof this.state.newAttachment);
 
     return (
-      <View style={globalStyles.container}>
-        <ScrollView>
-          {recipeHeader}
-          {ingredients}
-          {instructions}
-        </ScrollView>
-        <View style={formStyles.formBox}>
-          {toggleEditUpdate}
-          <TouchableOpacity
-            type="submit"
-            style={formStyles.button}
-            onPress={this.confirmDelete}
-            title="Delete Recipe"
-            accessibilityLabel="Delete Recipe"
-          >
-            <Text style={formStyles.buttonText}>Delete Recipe</Text>
-          </TouchableOpacity>
+      <ScrollView>
+        {recipeHeader}
+        <View style={globalStyles.container}>
+          <ScrollView>
+            <View style={globalStyles.contentBox}>
+              <Text style={globalStyles.subHeading}>Ingredients</Text>
+              {ingredients}
+            </View>
+            <View style={globalStyles.contentBox}>
+              <Text style={globalStyles.subHeading}>Instructions</Text>
+              {instructions}
+            </View>
+          </ScrollView>
+          <View style={formStyles.formBox}>
+            {toggleEditUpdate}
+            <TouchableOpacity
+              type="submit"
+              style={formStyles.button}
+              onPress={this.confirmDelete}
+              title="Delete Recipe"
+              accessibilityLabel="Delete Recipe"
+            >
+              <Text style={formStyles.buttonText}>Delete Recipe</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 

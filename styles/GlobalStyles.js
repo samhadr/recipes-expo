@@ -13,13 +13,8 @@ const globalStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  heading: {
-    marginBottom: 10,
-    fontSize: 20,
-  },
-  error: {
-    marginBottom: 15,
-    color: 'red',
+  contentBox: {
+    marginBottom: 20,
   },
   // Typography
   bold: {
@@ -28,16 +23,31 @@ const globalStyles = StyleSheet.create({
   emphasis: {
     fontStyle: 'italic',
   },
-  inlineIcon: {
-    marginRight: 10,
+  heading: {
+    marginBottom: 15,
+    fontSize: 20,
+  },
+  subHeading: {
+    marginBottom: 10,
+    fontSize: 17,
+    fontWeight: 'bold',
   },
   smallText: {
     fontSize: 12,
   },
+  // Icons
+  inlineIcon: {
+    marginRight: 10,
+  },
   svg: {
     width: '100%',
     height: '100%',
-  }
+  },
+  // Other
+  error: {
+    marginBottom: 15,
+    color: 'red',
+  },
 });
 
 export default globalStyles;

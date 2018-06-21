@@ -1,6 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 import Colors from '../constants/Colors';
+
+const window = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   recipeListing: {
@@ -18,16 +20,41 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   recipeHeader: {
+    width: '100%',
+    // marginBottom: 15,
+    // paddingBottom: 15,
+    // borderBottomWidth: 1,
+    // borderColor: '#ddd',
+  },
+  recipeHeaderImg: {
+    // alignItems: 'flex-end',
+    width: window.width,
+    height: window.width,
+    // borderWidth: 1,
+    // borderColor: '#ddd',
+  },
+  recipeHeaderContent: {
     flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
     width: '100%',
   },
   recipeHeaderCopy: {
     flex: 8,
+    padding: 10,
+    color: '#fff',
   },
-  recipeImg: {
-    alignItems: 'flex-end',
-    width: 100,
-    height: 100,
+  recipeHeaderButtons: {
+    flex: 4,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    alignContent: 'center',
+    paddingRight: 10,
+  },
+  recipeHeaderButton: {
+    flexDirection: 'row',
+    marginLeft: 10,
   },
 });
 
