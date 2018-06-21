@@ -3,17 +3,16 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  ScrollView,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
 
 import { Auth } from 'aws-amplify';
 
-import ForgotPassword from './ForgotPassword';
-
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
+
+import Colors from '../constants/Colors';
 
 class SignIn extends Component {
   static navigationOptions = {
@@ -67,19 +66,11 @@ class SignIn extends Component {
   //   this.props.navigation.navigate('Search');
   // }
 
-  forgotPassword = () => {
-    Auth.forgotPassword(this.state.email)
-      .then(data => {
-        console.log('data: ', data);
-        Object.keys(data).length > 0 ? this.props.navigation.navigate('ForgotPassword', { emailAddress: this.state.email }) : null;
-      })
-  }
-
   render() {
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Sign in to your account:</Text>
-        <ScrollView style={formStyles.formBox}>
+        <View style={formStyles.formBox}>
           <TextInput
             style={formStyles.textInput}
             value={this.state.email}
@@ -111,14 +102,14 @@ class SignIn extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             type="submit"
-            // style={formStyles.button}
-            onPress={this.forgotPassword}
+            style={{ alignItems: 'center' }}
+            onPress={() => this.props.navigation.navigate('ForgotPassword')}
             title="Forgot Password?"
             accessibilityLabel="Forgot Password?"
           >
-            <Text style={[formStyles.buttonText, { color: 'black' }]}>Forgot Password?</Text>
+            <Text style={{ color: Colors.sageGreen }}>Forgot Password?</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </View>
     );
   }

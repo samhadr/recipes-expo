@@ -5,6 +5,7 @@ import SignUp from '../screens/SignUp';
 import ConfirmSignUp from '../screens/ConfirmSignUp';
 import SignIn from '../screens/SignIn';
 import ForgotPassword from '../screens/ForgotPassword';
+import ConfirmNewPassword from '../screens/ConfirmNewPassword';
 
 import Colors from '../constants/Colors';
 
@@ -25,13 +26,16 @@ export default createStackNavigator(
     ForgotPassword: {
       screen: ForgotPassword,
     },
+    ConfirmNewPassword: {
+      screen: ConfirmNewPassword,
+    },
   },
   {
     navigationOptions: () => ({
       headerStyle: {
         backgroundColor: Colors.sageGreen,
       },
-      headerTintColor: '#fff',
+      headerTintColor: Colors.gold,
       headerTitleStyle: {
         fontWeight: 'bold',
       },

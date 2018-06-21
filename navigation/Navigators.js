@@ -4,7 +4,6 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  Text
 } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
@@ -22,8 +21,6 @@ import {
 import Recipes from '../screens/Recipes';
 import Recipe from '../screens/Recipe';
 import CreateRecipe from '../screens/CreateRecipe';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 
 import DrawerHeader from '../components/DrawerHeader';
 
@@ -45,25 +42,15 @@ export const RecipesStack = createStackNavigator(
     navigationOptions: ({ navigation }) => ({
       headerStyle: {
         paddingRight: 10,
-        paddingLeft: 10,
         backgroundColor: Colors.sageGreen,
-        // borderBottomWidth: 0,
       },
       headerTitle: 'Recipes',
-      headerTintColor: Colors.tan,
-      // headerLeft: (
-      //   <TouchableOpacity
-      //     onPress={() => navigation.push('CreateRecipe')}
-      //     title="Create a new recipe"
-      //   >
-      //     <Text style={{ color: '#fff' }}>{"\uFF0B"} Create</Text>
-      //   </TouchableOpacity>
-      // ),
+      headerTintColor: Colors.gold,
       headerRight: (
         <TouchableOpacity
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         >
-          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color={Colors.tan} />
+          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color={Colors.gold} />
         </TouchableOpacity>
       ),
     }),
@@ -95,65 +82,9 @@ export const RecipeStack = createStackNavigator(
   }
 );
 
-export const LinksStack = createStackNavigator(
-  {
-    Links: {
-      screen: LinksScreen,
-    }
-  },
-  {
-    navigationOptions: ({ navigation }) => ({
-      // initialRouteName: 'SecondScreen',
-      // headerMode: 'screen',
-      headerStyle: {
-        paddingRight: 10,
-        paddingLeft: 10,
-      },
-      headerTitle: 'Links',
-      drawerLabel: 'Links',
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        >
-          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
-        </TouchableOpacity>
-      ),
-    }),
-  }
-);
-
-export const CreateStack = createStackNavigator(
-  {
-    Create: {
-      screen: CreateRecipe,
-    }
-  },
-  {
-    navigationOptions: ({ navigation }) => ({
-      // initialRouteName: 'SecondScreen',
-      // headerMode: 'screen',
-      headerStyle: {
-        paddingRight: 10,
-        paddingLeft: 10,
-      },
-      headerTitle: 'Links',
-      drawerLabel: 'Links',
-      headerRight: (
-        <TouchableOpacity
-          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        >
-          <Ionicons name={Platform.OS === 'ios' ? `ios-menu` : 'md-menu'} size={25} color="red" />
-        </TouchableOpacity>
-      ),
-    }),
-  }
-);
-
 export const Drawer = createDrawerNavigator(
   {
     Recipes: { screen: RecipesStack },
-    Links: { screen: LinksStack },
-    Create: { screen: CreateStack },
   },
   {
     drawerWidth: 250,

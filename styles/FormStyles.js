@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: '#fff',
     marginBottom: 15,
-    padding: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
     fontSize: 20,
     color: '#000',
     borderBottomWidth: 2,
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.sageGreen,
+    marginTop: 10,
     marginBottom: 10,
     padding: 15,
     paddingBottom: 18,
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 24,
-    color: '#fff',
+    color: Colors.gold,
   },
 });
 

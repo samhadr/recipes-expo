@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  ScrollView,
   TextInput,
   TouchableOpacity
 } from 'react-native';
@@ -41,7 +40,7 @@ class SignUp extends Component {
   }
 
   signUp = () => {
-    const { email, password, signUpData } = this.state;
+    const { email, password } = this.state;
     Auth.signUp(email, password)
     .then(
       data => {
@@ -61,13 +60,10 @@ class SignUp extends Component {
   }
 
   render() {
-    const { email, signUpData } = this.state;
-    const signUpSuccessMessage = Object.keys(signUpData).length > 0 ? 'Account created! Enter your confirmation code:' : null;
-
     return (
       <View style={globalStyles.container}>
         <Text style={globalStyles.heading}>Sign up to create an account:</Text>
-        <ScrollView style={formStyles.formBox}>
+        <View style={formStyles.formBox}>
           <TextInput
             style={formStyles.textInput}
             value={this.state.email}
@@ -98,7 +94,7 @@ class SignUp extends Component {
           >
             <Text style={formStyles.buttonText}>Submit</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </View>
     );
   }

@@ -15,7 +15,7 @@ import formStyles from '../styles/FormStyles';
 
 class ForgotPassword extends Component {
   static navigationOptions = {
-    title: 'Confirm New Password',
+    title: 'Forgot Password',
   };
   static propTypes = {
     email: PropTypes.string,
@@ -26,11 +26,9 @@ class ForgotPassword extends Component {
     super(props);
 
     this.state = {
-      confirmationCode: '',
-      newPassword: '',
-      newPasswordConfirm: '',
-      showConfirmError: false,
-      confirmError: '',
+      email: '',
+      showEmailError: false,
+      emailError: '',
     };
   }
 
@@ -44,74 +42,51 @@ class ForgotPassword extends Component {
     });
   }
 
-  confirmNewPassword = () => {
-    const { confirmationCode, newPassword, newPasswordConfirm } = this.state;
-    const email = this.props.navigation.getParam('emailAddress', 'no email');
-    console.log('email: ', email);
-    console.log('confirmationCode: ', confirmationCode);
-    console.log('newPassword: ', newPassword);
-    Auth.forgotPasswordSubmit(email, confirmationCode, newPassword)
-    .then(
-      data => {
-        console.log('forgotPasswordSubmit data = ', data);
-        if (newPassword === newPasswordConfirm) {
-            this.setState({ showConfirmError: false });
-            this.props.navigation.navigate('SignIn');
-        }
-      }
-    )
-    .catch(err => {
-      console.log(`confirm ERROR: ${err.message}`, err),
-      this.setState({
-        confirmError: err.message,
-        showConfirmError: true
+  forgotPassword = () => {
+    Auth.forgotPassword(this.state.email)
+      .then(data => {
+        console.log('data: ', data);
+        this.setState({
+          showEmailError: false
+        });
+        Object.keys(data).length > 0 ? this.props.navigation.navigate('ConfirmNewPassword', { emailAddress: this.state.email }) : null;
       })
-    });
+      .catch(err => {
+        console.log('email error: ', err);
+        this.setState({
+          emailError: err.message,
+          showEmailError: true
+        });
+      });
   }
 
   render() {
     return (
       <View style={globalStyles.container}>
-        <Text style={globalStyles.heading}>Confirm your new password.</Text>
+        <Text style={globalStyles.heading}>Forgot Password</Text>
         <View style={formStyles.formBox}>
-          <View style={formStyles.formBox}>
-            <Text>Enter your confirmation code:</Text>
-            <TextInput
-              style={formStyles.textInput}
-              value={this.state.confirmationCode}
-              onChangeText={value => this.onChangeText('confirmationCode', value)}
-              placeholder="Confirmation Code"
-              underlineColorAndroid="transparent"
-            />
-            {this.state.showConfirmError ? <Text style={globalStyles.error}>{this.state.confirmError}</Text> : null}
-            <Text>Please enter a new password for your account.</Text>
-            <Text style={formStyles.inputHelper}>Required: 8 chars, numbers, special chars, upper and lowercase.</Text>
-            <TextInput
-              style={formStyles.textInput}
-              value={this.state.newPassword}
-              onChangeText={value => this.onChangeText('newPassword', value)}
-              placeholder="New password"
-              secureTextEntry={true}
-              underlineColorAndroid="transparent"
-            />
-            <TextInput
-              style={formStyles.textInput}
-              value={this.state.newPasswordConfirm}
-              onChangeText={value => this.onChangeText('newPasswordConfirm', value)}
-              placeholder="Confirm new password"
-              secureTextEntry={true}
-              underlineColorAndroid="transparent"
-            />
-            <TouchableOpacity
-              type="submit"
-              style={formStyles.button}
-              onPress={this.confirmNewPassword}
-              title="Confirm New Password"
-              accessibilityLabel="Confirm New Password"
-            >
-              <Text style={formStyles.buttonText}>Confirm New Password</Text>
-            </TouchableOpacity>
-          </View>
+          <Text>Enter your email address:</Text>
+          <TextInput
+            style={formStyles.textInput}
+            value={this.state.email}
+            onChangeText={value => this.onChangeText('email', value)}
+            placeholder="Email"
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+            autoFocus={true}
+            keyboardType="email-address"
+          />
+          {this.state.showEmailError ? <Text style={globalStyles.error}>{this.state.emailError}</Text> : null}
+          <Text>A confirmation code will be sent to you. Enter the confirmation code and create a new password on the next screen.</Text>
+          <TouchableOpacity
+            type="submit"
+            style={formStyles.button}
+            onPress={this.forgotPassword}
+            title="Send Confirmation Code"
+            accessibilityLabel="Send Confirmation Code"
+          >
+            <Text style={formStyles.buttonText}>Send Confirmation Code</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

@@ -14,6 +14,7 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    marginBottom: 10,
   },
 });
 

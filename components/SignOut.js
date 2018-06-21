@@ -5,7 +5,7 @@ import { withNavigation } from 'react-navigation';
 
 import { Auth } from 'aws-amplify';
 
-import SignIn from '../screens/SignIn';
+import formStyles from '../styles/FormStyles';
 
 class SignOut extends Component {
   static propTypes = {
@@ -34,7 +34,7 @@ class SignOut extends Component {
         title="Sign Out"
         accessibilityLabel="Sign Out"
       >
-        <Text style={{ color: 'white' }}>Sign Out</Text>
+        <Text style={formStyles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
     );
   }

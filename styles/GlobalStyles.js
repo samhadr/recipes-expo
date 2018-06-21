@@ -6,11 +6,11 @@ const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
     height: '100%',
     padding: 15,
   },
-  centerContent: {
+  containerCenter: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
   heading: {

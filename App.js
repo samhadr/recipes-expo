@@ -3,18 +3,12 @@ import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { AppLoading, Asset, Font } from 'expo';
 
 // AWS API
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import config from './config';
 
 import { Ionicons } from '@expo/vector-icons';
-import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
-import RootNavigator from './navigation/RootNavigator';
 import AuthNavigator from './navigation/AuthNavigator';
-import MainTabNavigator from './navigation/MainTabNavigator';
 import MainNavigator from './navigation/Navigators';
-import RecipesStack from './navigation/Navigators';
-import Home from './screens/Home';
-import SettingsScreen from './screens/SettingsScreen';
 
 Amplify.configure({
   Auth: {

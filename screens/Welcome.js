@@ -28,31 +28,29 @@ class Welcome extends Component {
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={[globalStyles.container, { backgroundColor: Colors.sageGreen }]}>
-        <View style={globalStyles.centerContent}>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ width: 75, height: 75, marginBottom: 10 }}>
-              <Logo fill="#fff" />
-            </View>
-            <Text style={[globalStyles.heading, { color: '#fff' }]}>Welcome to Recipes</Text>
-            <TouchableOpacity
-              onPress={() => navigate('SignUp')}
-              title="Sign Up"
-              accessibilityLabel="Sign Up"
-            >
-              <Text style={[formStyles.buttonText, { color: 'gold' }]}>Sign Up</Text>
-            </TouchableOpacity>
+      <View style={[globalStyles.container, globalStyles.containerCenter, { backgroundColor: Colors.sageGreen }]}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ width: 75, height: 75, marginBottom: 10 }}>
+            <Logo fill="#fff" />
           </View>
-          <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
-            <Text style={[globalStyles.heading, { color: '#fff' }]}>Already have an account?</Text>
-            <TouchableOpacity
-              onPress={() => navigate('SignIn')}
-              title="Sign In"
-              accessibilityLabel="Sign In"
-            >
-              <Text style={[formStyles.buttonText, { color: 'gold' }]}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={[globalStyles.heading, { color: '#fff' }]}>Welcome to Recipes</Text>
+          <TouchableOpacity
+            onPress={() => navigate('SignUp')}
+            title="Sign Up"
+            accessibilityLabel="Sign Up"
+          >
+            <Text style={formStyles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+          <Text style={[globalStyles.heading, { color: '#fff' }]}>Already have an account?</Text>
+          <TouchableOpacity
+            onPress={() => navigate('SignIn')}
+            title="Sign In"
+            accessibilityLabel="Sign In"
+          >
+            <Text style={formStyles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

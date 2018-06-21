@@ -21,9 +21,13 @@ import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
 import recipeStyles from '../styles/RecipeStyles';
 
+import Colors from '../constants/Colors';
+
 class Recipe extends Component {
   static navigationOptions = {
-    title: 'Create A Recipe',
+    headerTitleStyle: {
+      color: Platform.OS === 'ios' ? 'transparent' : Colors.gold,
+    },
   };
 
   static propTypes = {
