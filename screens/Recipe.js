@@ -153,11 +153,10 @@ class Recipe extends Component {
 
   deleteRecipe() {
     const { id } = this.state;
-    // console.log('recipe to delete: ', id);
     return API.del('recipes', `/recipes/${id}`);
   }
 
-  confirmDelete = () => {
+  confirmDeleteRecipe = () => {
     // console.log('confirm delete');
     Alert.alert(
       'Delete Recipe',
@@ -199,33 +198,24 @@ class Recipe extends Component {
     }
   }
 
+  confirmDeleteImage = () => {
+    // console.log('confirm delete');
+    Alert.alert(
+      'Delete Image',
+      'Are you sure you want to delete this image?',
+      [
+        // {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => this.deleteImage()},
+      ],
+      { cancelable: false }
+    )
+  }
+
   handleEdit = () => {
     this.setState(prevState => ({
       editMode: !prevState.editMode
     }));
-  }
-
-  editUpdateButton = () => {
-    const { editMode } = this.state;
-    return editMode
-      ? <TouchableOpacity
-          type="submit"
-          style={formStyles.button}
-          onPress={this.handleUpdate}
-          title="Done"
-          accessibilityLabel="Done"
-        >
-          <Text style={formStyles.buttonText}>Done</Text>
-        </TouchableOpacity>
-      : <TouchableOpacity
-          type="submit"
-          style={formStyles.button}
-          onPress={this.handleEdit}
-          title="Edit Recipe"
-          accessibilityLabel="Edit Recipe"
-        >
-          <Text style={formStyles.buttonText}>Edit Recipe</Text>
-        </TouchableOpacity>
   }
 
   handleImageButton = async () => {
@@ -269,28 +259,47 @@ class Recipe extends Component {
         attachmentURL
         ? <View>
             <Image
-              style={recipeStyles.recipeImg}
+              style={recipeStyles.recipeHeaderImg}
               source={{ uri: attachmentURL }}
+              resizeMode={'cover'}
             />
+            <View style={{ width: '100%' }}>
+              <LinearGradient
+                colors={['transparent', '#000']}
+                start={[0, 0]}
+                end={[0, 1]}
+                style={[recipeStyles.recipeHeaderContent, { paddingBottom: 10 }]}
+              >
+                <View style={recipeStyles.recipeHeaderButtons}>
+                  <TouchableOpacity
+                    onPress={this.confirmDeleteImage}
+                    title="Delete image"
+                    style={recipeStyles.recipeHeaderButton}
+                  >
+                    <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={15} color={'white'} />
+                    <Text style={{ color: 'white' }}> Delete image</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this.handleImageButton}
+                    title="Change image"
+                    style={recipeStyles.recipeHeaderButton}
+                  >
+                    <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={15} color={'white'} />
+                    <Text style={{ color: 'white' }}> Change image</Text>
+                  </TouchableOpacity>
+                </View>
+              </LinearGradient>
+            </View>
+          </View>
+        : <View style={[recipeStyles.recipeHeaderContent, recipeStyles.recipeHeaderContentEdit]}>
             <TouchableOpacity
               onPress={this.handleImageButton}
-              title="Change image"
+              title="Add image"
+              style={recipeStyles.recipeHeaderButton}
             >
-              <Text>{"\uFF0B"} Change image</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.deleteImage}
-              title="Delete image"
-            >
-              <Text>{"\uFF0B"} Delete image</Text>
+              <Text>{"\uFF0B"} Add image</Text>
             </TouchableOpacity>
           </View>
-        : <TouchableOpacity
-            onPress={this.handleImageButton}
-            title="Add image"
-          >
-            <Text>{"\uFF0B"} Add image</Text>
-          </TouchableOpacity>
       )
     }
     return (
@@ -305,21 +314,22 @@ class Recipe extends Component {
   }
 
   recipeHeader = () => {
-    const { editMode, title, date, attachmentURL } = this.state;
+    const { editMode, title } = this.state;
     const recipeImage = this.recipeImage();
 
     if (editMode) {
-      // console.log('recipeHeader attachmentURL: ', attachmentURL);
       return (
-        <View style={recipeStyles.recipeHeader}>
+        <View style={[recipeStyles.recipeHeader, { backgroundColor: 'white' }]}>
           {recipeImage}
-          <TextInput
-            style={[formStyles.textInput, recipeStyles.recipeHeaderCopy]}
-            value={title}
-            onChangeText={value => this.onChangeText('title', value)}
-            placeholder={title}
-            underlineColorAndroid="transparent"
-          />
+          <View style={[recipeStyles.recipeHeaderContent, recipeStyles.recipeHeaderContentEdit]}>
+            <TextInput
+              style={[formStyles.textInput, formStyles.textEdit]}
+              value={title}
+              onChangeText={value => this.onChangeText('title', value)}
+              placeholder={title}
+              underlineColorAndroid="transparent"
+            />
+          </View>
         </View>
       )
     }
@@ -334,31 +344,7 @@ class Recipe extends Component {
             end={[0, 1]}
             style={recipeStyles.recipeHeaderContent}
           >
-            {/* <View style={recipeStyles.recipeHeaderCopy}> */}
-              <Text style={[globalStyles.heading, recipeStyles.recipeHeaderCopy]}>{title}</Text>
-              <View style={recipeStyles.recipeHeaderButtons}>
-                <TouchableOpacity
-                  type="submit"
-                  style={recipeStyles.recipeHeaderButton}
-                  onPress={this.handleEdit}
-                  title="Edit Recipe"
-                  accessibilityLabel="Edit Recipe"
-                >
-                  <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={15} color={'white'} />
-                  <Text style={{ color: 'white' }}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  type="submit"
-                  style={recipeStyles.recipeHeaderButton}
-                  onPress={this.confirmDelete}
-                  title="Delete Recipe"
-                  accessibilityLabel="Delete Recipe"
-                >
-                  <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={15} color={'white'} />
-                  <Text style={{ color: 'white' }}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            {/* </View> */}
+            <Text style={[globalStyles.heading, recipeStyles.recipeHeaderCopy]}>{title}</Text>
           </LinearGradient>
           {/* <Text style={globalStyles.smallText}>{new Date(date).toLocaleDateString()}</Text> */}
         </View>
@@ -409,6 +395,35 @@ class Recipe extends Component {
     });
   }
 
+  editToggleButton = () => {
+    const { editMode } = this.state;
+    
+    if (editMode) {
+      return (
+        <TouchableOpacity
+          type="submit"
+          style={recipeStyles.actionButton}
+          onPress={this.handleEdit}
+          title="Save Changes"
+          accessibilityLabel="Save Changes"
+        >
+          <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={Colors.sageGreen} />
+        </TouchableOpacity>
+      )
+    }
+    return (
+      <TouchableOpacity
+        type="submit"
+        style={recipeStyles.actionButton}
+        onPress={this.handleEdit}
+        title="Edit Recipe"
+        accessibilityLabel="Edit Recipe"
+      >
+        <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={35} color={Colors.sageGreen} />
+      </TouchableOpacity>
+    )
+  }
+
   instructions = () => {
     const { editMode, instructions } = this.state;
 
@@ -417,7 +432,7 @@ class Recipe extends Component {
         <TextInput
           style={formStyles.textInput}
           multiline
-          numberOfLines={5}
+          numberOfLines={10}
           value={instructions}
           onChangeText={value => this.onChangeText('instructions', value)}
           placeholder={instructions}
@@ -443,7 +458,7 @@ class Recipe extends Component {
     const recipeHeader = this.recipeHeader();
     const ingredients = this.state.ingredients ? this.ingredients() : null;
     const instructions = this.instructions();
-    const toggleEditUpdate = this.editUpdateButton();
+    const editToggleButton = this.editToggleButton();
     // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
     // console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
     // console.log('isUpdating: ', this.state.isUpdating);
@@ -455,27 +470,30 @@ class Recipe extends Component {
         {recipeHeader}
         <View style={globalStyles.container}>
           <ScrollView>
-            <View style={globalStyles.contentBox}>
-              <Text style={globalStyles.subHeading}>Ingredients</Text>
-              {ingredients}
+            <View style={[globalStyles.contentBox, { flexDirection: 'row' }]}>
+              <View style={recipeStyles.ingredients}>
+                <Text style={globalStyles.subHeading}>Ingredients</Text>
+                {ingredients}
+              </View>
+              <View style={recipeStyles.actionButtons}>
+                {editToggleButton}
+                <TouchableOpacity
+                  type="submit"
+                  style={recipeStyles.actionButton}
+                  onPress={this.confirmDeleteRecipe}
+                  title="Delete Recipe"
+                  accessibilityLabel="Delete Recipe"
+                >
+                  <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={35} color={Colors.sageGreen} />
+                  {/* <Text style={{ color: 'white' }}> Delete</Text> */}
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={globalStyles.contentBox}>
               <Text style={globalStyles.subHeading}>Instructions</Text>
               {instructions}
             </View>
           </ScrollView>
-          <View style={formStyles.formBox}>
-            {toggleEditUpdate}
-            <TouchableOpacity
-              type="submit"
-              style={formStyles.button}
-              onPress={this.confirmDelete}
-              title="Delete Recipe"
-              accessibilityLabel="Delete Recipe"
-            >
-              <Text style={formStyles.buttonText}>Delete Recipe</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
     );

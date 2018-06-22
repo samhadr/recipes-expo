@@ -19,42 +19,59 @@ const styles = StyleSheet.create({
     height: 50,
     marginRight: 10,
   },
+  recipeListingContent: {
+    flex: 10,
+  },
   recipeHeader: {
     width: '100%',
-    // marginBottom: 15,
-    // paddingBottom: 15,
-    // borderBottomWidth: 1,
-    // borderColor: '#ddd',
   },
   recipeHeaderImg: {
-    // alignItems: 'flex-end',
     width: window.width,
     height: window.width,
-    // borderWidth: 1,
-    // borderColor: '#ddd',
   },
   recipeHeaderContent: {
     flexDirection: 'row',
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    padding: 10,
+    paddingBottom: 0,
+  },
+  recipeHeaderContentEdit: {
+    position: 'relative',
   },
   recipeHeaderCopy: {
     flex: 8,
-    padding: 10,
+    margin: 0,
     color: '#fff',
+    textShadowColor: '#000',
+    textShadowOffset: {
+      width: 1,
+      height: 1,
+    },
+    textShadowRadius: 2,
   },
   recipeHeaderButtons: {
     flex: 4,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    alignContent: 'center',
-    paddingRight: 10,
+    justifyContent: 'space-between',
+    marginTop: 6,
   },
   recipeHeaderButton: {
     flexDirection: 'row',
-    marginLeft: 10,
+    // marginLeft: 10,
+  },
+  ingredients: {
+    flex: 10,
+    // backgroundColor: '#ddd',
+  },
+  actionButtons: {
+    flex: 2,
+    alignItems: 'flex-end',
+    // backgroundColor: 'red',
+  },
+  actionButton: {
+    width: 28,
   },
 });
 

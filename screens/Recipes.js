@@ -90,9 +90,9 @@ class Recipes extends Component {
                     <Logo fill="#fff" />
                   </View>
               }
-              <View>
-                <Text style={globalStyles.heading}>{recipe.title}</Text>
-                <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text>
+              <View style={recipeStyles.recipeListingContent}>
+                <Text style={[globalStyles.heading, { marginBottom: 0 }]}>{recipe.title}</Text>
+                {/* <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text> */}
               </View>
             </TouchableOpacity>
           </View>
