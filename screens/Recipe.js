@@ -322,8 +322,11 @@ class Recipe extends Component {
         <View style={[recipeStyles.recipeHeader, { backgroundColor: 'white' }]}>
           {recipeImage}
           <View style={[recipeStyles.recipeHeaderContent, recipeStyles.recipeHeaderContentEdit]}>
+            <Text style={[globalStyles.subHeading]}>Title</Text>
+          </View>
+          <View style={[recipeStyles.recipeHeaderContent, recipeStyles.recipeHeaderContentEdit]}>
             <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
+              style={[formStyles.textInput, formStyles.textEdit, {maxWidth: 300}]}
               value={title}
               onChangeText={value => this.onChangeText('title', value)}
               placeholder={title}
@@ -352,6 +355,13 @@ class Recipe extends Component {
     )
   }
 
+  addIngredient = () => {
+    const { ingredients } = this.state;
+    const newIngredient = { name: '', amount: '', unit: ''}
+    ingredients.push(newIngredient);
+    this.ingredients();
+  }
+
   ingredients = () => {
     const { editMode, ingredients } = this.state;
     // console.log('ingredients: ', ingredients, typeof ingredients);
@@ -360,27 +370,30 @@ class Recipe extends Component {
       if (editMode && index > 0) {
         // console.log('index: ', index);
         return (
-          <View key={index} style={{ flexDirection: 'row' }}>
+          <View key={index} style={{ flexDirection: 'row', width: '100%' }}>
             <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
+              style={[formStyles.textInput, formStyles.textEdit, {width: 45}]}
               value={ingredient.amount}
               onChangeText={value => this.onChangeIngredient((index -1), 'amount', value)}
               placeholder={ingredient.amount ? ingredient.amount : 'amount'}
               underlineColorAndroid="transparent"
+              maxLength={10}
             />
             <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
+              style={[formStyles.textInput, formStyles.textEdit, {width: 75}]}
               value={ingredient.unit}
               onChangeText={value => this.onChangeIngredient((index -1), 'unit', value)}
               placeholder={ingredient.unit ? ingredient.unit : 'unit'}
               underlineColorAndroid="transparent"
+              maxLength={10}
             />
             <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
+              style={[formStyles.textInput, formStyles.textEdit, {width: 150}]}
               value={ingredient.name}
               onChangeText={value => this.onChangeIngredient((index -1), 'name', value)}
               placeholder={ingredient.name ? ingredient.name : 'name'}
               underlineColorAndroid="transparent"
+              maxLength={10}
             />
           </View>
         )
@@ -452,7 +465,7 @@ class Recipe extends Component {
       // attachment,
       // attachmentURL,
       // newAttachment,
-      // editMode
+      editMode
     } = this.state;
     // const recipeImage = this.recipeImage();
     const recipeHeader = this.recipeHeader();
@@ -474,6 +487,19 @@ class Recipe extends Component {
               <View style={recipeStyles.ingredients}>
                 <Text style={globalStyles.subHeading}>Ingredients</Text>
                 {ingredients}
+                {
+                  editMode
+                  ?
+                  <TouchableOpacity
+                    onPress={() => this.addIngredient()}
+                    title="Add Ingredient"
+                    style={{ alignSelf: 'flex-start', paddingBottom: 10 }}
+                  >
+                    <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Ingredient</Text>
+                  </TouchableOpacity>
+                  :
+                  null
+                }
               </View>
               <View style={recipeStyles.actionButtons}>
                 {editToggleButton}
