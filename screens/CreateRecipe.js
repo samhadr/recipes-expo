@@ -18,8 +18,12 @@ import { API } from 'aws-amplify';
 import config from '../config';
 import { s3Upload } from '../libs/awsLib';
 
+import SingleIngredient from '../components/SingleIngredient';
+
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
+
+import Colors from '../constants/Colors';
 
 class CreateRecipe extends Component {
   static navigationOptions = {
@@ -44,7 +48,16 @@ class CreateRecipe extends Component {
       showPhotos: false,
       photos: [],
       imageObject: null,
-      image: ''
+      image: '',
+      editMode: false
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.ingredients.length > 0 ) {
+      this.setState({ editMode: true });
+    } else {
+      this.setState({ editMode: false });
     }
   }
 
@@ -125,9 +138,11 @@ class CreateRecipe extends Component {
   }
 
   render() {
-    const { imageObject, image } = this.state;
+    const { imageObject, image, editMode } = this.state;
+    // const ingredient = this.renderIngredient();
     console.log('imageObject: ', imageObject);
     console.log('image: ', image);
+    console.log('editMode: ', editMode);
 
     return (
       <View style={globalStyles.container}>
@@ -140,13 +155,14 @@ class CreateRecipe extends Component {
             underlineColorAndroid="transparent"
             autoFocus={true}
           />
-          <TextInput
+          {/* <TextInput
             style={formStyles.textInput}
             value={this.state.ingredients}
             onChangeText={value => this.onChangeText('ingredients', value)}
             placeholder="Add Ingredient"
             underlineColorAndroid="transparent"
-          />
+          /> */}
+          <SingleIngredient />
           <TextInput
             style={formStyles.textInput}
             multiline

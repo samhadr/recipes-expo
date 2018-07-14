@@ -14,6 +14,8 @@ import {
 
 import { API, Storage } from 'aws-amplify';
 
+import SingleIngredient from '../components/SingleIngredient';
+
 import { ImagePicker, Permissions, FileSystem, LinearGradient } from 'expo';
 
 import { s3Upload, s3Delete } from '../libs/awsLib';
@@ -352,47 +354,25 @@ class Recipe extends Component {
     )
   }
 
-  ingredients = () => {
+  showIngredients = () => {
     const { editMode, ingredients } = this.state;
-    // console.log('ingredients: ', ingredients, typeof ingredients);
-    return [{}].concat(ingredients).map((ingredient, index) => {
-      // console.log('ingredient.unit: ', ingredient.unit);
-      if (editMode && index > 0) {
-        // console.log('index: ', index);
+    console.log('ingredients: ', ingredients, typeof ingredients);
+    if (ingredients && ingredients !== null) {
+      console.log('ingredients present');
+      return ingredients.map((ingredient, i) => {
+        // console.log('ingredient.unit: ', ingredient.unit);
         return (
-          <View key={index} style={{ flexDirection: 'row' }}>
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
-              value={ingredient.amount}
-              onChangeText={value => this.onChangeIngredient((index -1), 'amount', value)}
-              placeholder={ingredient.amount ? ingredient.amount : 'amount'}
-              underlineColorAndroid="transparent"
-            />
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
-              value={ingredient.unit}
-              onChangeText={value => this.onChangeIngredient((index -1), 'unit', value)}
-              placeholder={ingredient.unit ? ingredient.unit : 'unit'}
-              underlineColorAndroid="transparent"
-            />
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit]}
-              value={ingredient.name}
-              onChangeText={value => this.onChangeIngredient((index -1), 'name', value)}
-              placeholder={ingredient.name ? ingredient.name : 'name'}
-              underlineColorAndroid="transparent"
-            />
-          </View>
+          <SingleIngredient
+            key={i}
+            name={ingredient.name}
+            amount={ingredient.amount}
+            unit={ingredient.unit}
+            editMode={editMode}
+          />
         )
-      }
-      if (index > 0) {
-        return (
-          <Text key={index}>
-            {ingredient.amount ? ingredient.amount : null} {ingredient.unit ? ingredient.unit : null} {ingredient.name}
-          </Text>
-        )
-      }
-    });
+      });
+    }
+    return <Text>No Ingredients</Text>;
   }
 
   editToggleButton = () => {
@@ -456,7 +436,7 @@ class Recipe extends Component {
     } = this.state;
     // const recipeImage = this.recipeImage();
     const recipeHeader = this.recipeHeader();
-    const ingredients = this.state.ingredients ? this.ingredients() : null;
+    const ingredients = this.showIngredients();
     const instructions = this.instructions();
     const editToggleButton = this.editToggleButton();
     // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
