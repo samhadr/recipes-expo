@@ -16,6 +16,8 @@ import { API, Storage } from 'aws-amplify';
 
 import { ImagePicker, Permissions, FileSystem, LinearGradient } from 'expo';
 
+import AllIngredients from '../components/AllIngredients';
+
 import { s3Upload, s3Delete } from '../libs/awsLib';
 
 import globalStyles from '../styles/GlobalStyles';
@@ -362,49 +364,15 @@ class Recipe extends Component {
     this.ingredients();
   }
 
-  ingredients = () => {
-    const { editMode, ingredients } = this.state;
-    // console.log('ingredients: ', ingredients, typeof ingredients);
-    return [{}].concat(ingredients).map((ingredient, index) => {
-      // console.log('ingredient.unit: ', ingredient.unit);
-      if (editMode && index > 0) {
-        // console.log('index: ', index);
-        return (
-          <View key={index} style={{ flexDirection: 'row', width: '100%' }}>
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit, {width: 45}]}
-              value={ingredient.amount}
-              onChangeText={value => this.onChangeIngredient((index -1), 'amount', value)}
-              placeholder={ingredient.amount ? ingredient.amount : 'amount'}
-              underlineColorAndroid="transparent"
-              maxLength={10}
-            />
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit, {width: 75}]}
-              value={ingredient.unit}
-              onChangeText={value => this.onChangeIngredient((index -1), 'unit', value)}
-              placeholder={ingredient.unit ? ingredient.unit : 'unit'}
-              underlineColorAndroid="transparent"
-              maxLength={10}
-            />
-            <TextInput
-              style={[formStyles.textInput, formStyles.textEdit, {width: 150}]}
-              value={ingredient.name}
-              onChangeText={value => this.onChangeIngredient((index -1), 'name', value)}
-              placeholder={ingredient.name ? ingredient.name : 'name'}
-              underlineColorAndroid="transparent"
-              maxLength={10}
-            />
-          </View>
-        )
-      }
-      if (index > 0) {
-        return (
-          <Text key={index}>
-            {ingredient.amount ? ingredient.amount : null} {ingredient.unit ? ingredient.unit : null} {ingredient.name}
-          </Text>
-        )
-      }
+  handleIngredientsChange = (i, key, value) => {
+    console.log('ingredients change: ', (i, key, value));
+    const { ingredients } = this.state;
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0][i][key] = value.toString();
+    console.log('updatedIngredients: ', updatedIngredients);
+    this.setState({
+      ingredients: updatedIngredients[0]
     });
   }
 
@@ -460,7 +428,7 @@ class Recipe extends Component {
 
   render() {
     const {
-      // ingredients,
+      ingredients,
       // instructions,
       // attachment,
       // attachmentURL,
@@ -469,7 +437,7 @@ class Recipe extends Component {
     } = this.state;
     // const recipeImage = this.recipeImage();
     const recipeHeader = this.recipeHeader();
-    const ingredients = this.state.ingredients ? this.ingredients() : null;
+    // const ingredients = this.state.ingredients ? this.ingredients() : null;
     const instructions = this.instructions();
     const editToggleButton = this.editToggleButton();
     // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
@@ -486,7 +454,17 @@ class Recipe extends Component {
             <View style={[globalStyles.contentBox, { flexDirection: 'row' }]}>
               <View style={recipeStyles.ingredients}>
                 <Text style={globalStyles.subHeading}>Ingredients</Text>
-                {ingredients}
+                {
+                  ingredients
+                  ?
+                  <AllIngredients
+                    ingredients={ingredients}
+                    editMode={editMode}
+                    onIngredientsChange={this.handleIngredientsChange}
+                  />
+                  :
+                  null
+                }
                 {
                   editMode
                   ?
