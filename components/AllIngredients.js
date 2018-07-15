@@ -23,6 +23,11 @@ class AllIngredients extends Component {
     this.props.onIngredientsChange(i, key, value);
   }
 
+  handleIngredientDelete = (i) => {
+    console.log('handleIngredientDelete: ', (i));
+    this.props.onIngredientDelete(i);
+  }
+
   renderAllIngredients = () => {
     const { ingredients, editMode } = this.props;
 
@@ -37,6 +42,7 @@ class AllIngredients extends Component {
             unit={ingredient.unit}
             editMode={editMode}
             onIngredientChange={this.handleIngredientChange}
+            onIngredientDelete={this.handleIngredientDelete}
           />
         )
       });

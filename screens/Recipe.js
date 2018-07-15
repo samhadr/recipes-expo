@@ -89,21 +89,19 @@ class Recipe extends Component {
     });
   }
 
-  onChangeIngredient = (i, key, value) => {
+  checkEmptyIngredients = () => {
     const { ingredients } = this.state;
-    if (ingredients) {
-      const newIngredients = ingredients.slice();
-      // console.log('newIngredients: ', newIngredients);
-      // console.log('i: ', i);
-      // console.log('key: ', key);
-      // console.log('value: ', value);
-      newIngredients[i][key] = value;
-      this.setState({
-        ingredients: newIngredients
-      });
-      // console.log('key: value = ', newIngredients[i][key] + ':' + value);
-      // console.log('newIngredients after assign: ', newIngredients);
-    }
+    const updatedIngredients = new Array(ingredients);
+    
+    updatedIngredients[0].map((item, index) => {
+      if (item.name === null || item.name.length === 0) {
+        ingredients.splice(index, 1);
+      }
+    });
+
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
   }
 
   handleUpdate = async () => {
@@ -120,6 +118,8 @@ class Recipe extends Component {
     }
   
     this.setState({ isUpdating: true });
+
+    this.checkEmptyIngredients();
   
     try {
       if (this.state.imageObject !== null) {
@@ -359,18 +359,36 @@ class Recipe extends Component {
 
   addIngredient = () => {
     const { ingredients } = this.state;
-    const newIngredient = { name: '', amount: '', unit: ''}
-    ingredients.push(newIngredient);
-    this.ingredients();
+    const newIngredient = { name: null, amount: null, unit: null}
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0].push(newIngredient);
+    console.log('updatedIngredients: ', updatedIngredients);
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
   }
 
   handleIngredientsChange = (i, key, value) => {
-    console.log('handleIngredientsChange: ', (i, key, value, typeof value));
     const { ingredients } = this.state;
     const updatedIngredients = new Array(ingredients);
 
     updatedIngredients[0][i][key] = value;
     console.log('updatedIngredients: ', updatedIngredients);
+
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
+  }
+
+  handleIngredientDelete = (i) => {
+    console.log('handleIngredientsChange: ', i);
+    const { ingredients } = this.state;
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0].splice(i, 1);
+    console.log('updatedIngredients: ', updatedIngredients);
+
     this.setState({
       ingredients: updatedIngredients[0]
     });
@@ -440,6 +458,7 @@ class Recipe extends Component {
     // const ingredients = this.state.ingredients ? this.ingredients() : null;
     const instructions = this.instructions();
     const editToggleButton = this.editToggleButton();
+    console.log('this.state.ingredients: ', ingredients);
     // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
     // console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
     // console.log('isUpdating: ', this.state.isUpdating);
@@ -461,6 +480,7 @@ class Recipe extends Component {
                     ingredients={ingredients}
                     editMode={editMode}
                     onIngredientsChange={this.handleIngredientsChange}
+                    onIngredientDelete={this.handleIngredientDelete}
                   />
                   :
                   null

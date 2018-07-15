@@ -4,9 +4,15 @@ import {
   Text,
   View,
   TextInput,
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 
 import formStyles from '../styles/FormStyles';
+import recipeStyles from '../styles/RecipeStyles';
+import Colors from '../constants/Colors';
+
+import { Ionicons } from '@expo/vector-icons';
 
 class SingleIngredient extends Component {
   static propTypes = {
@@ -50,6 +56,11 @@ class SingleIngredient extends Component {
     this.props.onIngredientChange(i, key, value);
   }
 
+  handleDelete = (i) => {
+    console.log('handleDelete: ', i);
+    this.props.onIngredientDelete(i);
+  }
+
   renderSingleIngredient = () => {
     const { index, editMode } = this.props;
     const { name, amount, unit } = this.state;
@@ -61,7 +72,7 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit]}
             value={amount}
             onChangeText={value => this.onChangeText('amount', value)}
-            onBlur={() => this.handleChange(index, 'amount', amount)}
+            onEndEditing={() => this.handleChange(index, 'amount', amount)}
             placeholder={amount ? amount : 'amount'}
             underlineColorAndroid="transparent"
           />
@@ -69,7 +80,7 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit]}
             value={unit}
             onChangeText={value => this.onChangeText('unit', value)}
-            onBlur={() => this.handleChange(index, 'unit', unit)}
+            onEndEditing={() => this.handleChange(index, 'unit', unit)}
             placeholder={unit ? unit : 'unit'}
             underlineColorAndroid="transparent"
           />
@@ -77,11 +88,19 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit]}
             value={name}
             onChangeText={value => this.onChangeText('name', value)}
-            onBlur={() => this.handleChange(index, 'name', name)}
+            onEndEditing={() => this.handleChange(index, 'name', name)}
             placeholder={name ? name : 'name'}
             underlineColorAndroid="transparent"
           />
-          {/* <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={Colors.sageGreen} /> */}
+          <TouchableOpacity
+            type="submit"
+            style={recipeStyles.actionButton}
+            onPress={() => this.handleDelete(index)}
+            title="Delete Ingredient"
+            accessibilityLabel="Delete Ingredient"
+          >
+            <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={25} color={Colors.sageGreen} />
+          </TouchableOpacity>
         </View>
       )
     }
