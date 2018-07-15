@@ -51,32 +51,33 @@ class SingleIngredient extends Component {
   }
 
   renderSingleIngredient = () => {
-    const { index, name, amount, unit, editMode } = this.props;
+    const { index, editMode } = this.props;
+    const { name, amount, unit } = this.state;
 
     if (editMode) {
       return (
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             style={[formStyles.textInput, formStyles.textEdit]}
-            value={this.state.amount}
+            value={amount}
             onChangeText={value => this.onChangeText('amount', value)}
-            onBlur={this.handleChange(index, 'amount', this.state.amount)}
+            onBlur={() => this.handleChange(index, 'amount', amount)}
             placeholder={amount ? amount : 'amount'}
             underlineColorAndroid="transparent"
           />
           <TextInput
             style={[formStyles.textInput, formStyles.textEdit]}
-            value={this.state.unit}
-            onChangeText={value => this.onChangeText('amount', value)}
-            onBlur={this.handleChange(index, 'unit', this.state.unit)}
+            value={unit}
+            onChangeText={value => this.onChangeText('unit', value)}
+            onBlur={() => this.handleChange(index, 'unit', unit)}
             placeholder={unit ? unit : 'unit'}
             underlineColorAndroid="transparent"
           />
           <TextInput
             style={[formStyles.textInput, formStyles.textEdit]}
-            value={this.state.name}
-            onChangeText={value => this.onChangeText('amount', value)}
-            onBlur={this.handleChange(index, 'name', this.state.name)}
+            value={name}
+            onChangeText={value => this.onChangeText('name', value)}
+            onBlur={() => this.handleChange(index, 'name', name)}
             placeholder={name ? name : 'name'}
             underlineColorAndroid="transparent"
           />

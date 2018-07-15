@@ -365,11 +365,11 @@ class Recipe extends Component {
   }
 
   handleIngredientsChange = (i, key, value) => {
-    console.log('ingredients change: ', (i, key, value));
+    console.log('handleIngredientsChange: ', (i, key, value, typeof value));
     const { ingredients } = this.state;
     const updatedIngredients = new Array(ingredients);
 
-    updatedIngredients[0][i][key] = value.toString();
+    updatedIngredients[0][i][key] = value;
     console.log('updatedIngredients: ', updatedIngredients);
     this.setState({
       ingredients: updatedIngredients[0]
@@ -384,7 +384,7 @@ class Recipe extends Component {
         <TouchableOpacity
           type="submit"
           style={recipeStyles.actionButton}
-          onPress={this.handleEdit}
+          onPress={this.handleUpdate}
           title="Save Changes"
           accessibilityLabel="Save Changes"
         >
