@@ -21,12 +21,17 @@ class S3Image extends Component {
     }
   }
 
+  componentWillMount() {
+    this.getImagePath();
+  }
+
   componentDidMount() {
     this.getImagePath();
   }
 
   getImagePath = async () => {
     const { image } = this.props;
+    console.log('S3Image image: ', image);
     Storage.vault.get(image)
     .then(imagePath => {
       this.setState({
@@ -40,9 +45,11 @@ class S3Image extends Component {
 
   render() {
     const { imageURL } = this.state;
+    console.log('imageURL: ', imageURL);
     const { imageStyle } = this.props;
     console.log('imageStyle: ', imageStyle, typeof imageStyle);
     const imagePath = imageURL ? imageURL : 'none';
+    console.log('imagePath: ', imagePath);
 
     return (
       <Image

@@ -5,13 +5,16 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Image
 } from 'react-native';
 
 import { WebBrowser } from 'expo';
 
 import { API } from "aws-amplify";
 
-import S3Image from '../components/S3Image';
+import { s3Path } from '../libs/awsLib';
+
+// import S3Image from '../components/S3Image';
 import Logo from '../components/icons/Logo';
 
 import globalStyles from '../styles/GlobalStyles';
@@ -35,6 +38,7 @@ class Recipes extends Component {
     this.state = {
       isLoading: true,
       recipesData: {},
+      recipesImgPaths: []
     }
     this.getRecipes = this.getRecipes.bind(this);
   }
@@ -59,6 +63,7 @@ class Recipes extends Component {
     try {
       const recipesData = await this.getRecipes();
       this.setState({ recipesData });
+      this.getImgPaths();
     } catch (e) {
       console.log('recipesData error: ', e);
     }
@@ -67,13 +72,41 @@ class Recipes extends Component {
   }
   
   getRecipes() {
+    console.log('getting recipes from API');
     return API.get('recipes', '/recipes');
   }
 
-  renderRecipes(recipes) {
+  async getImgPaths() {
+    const { recipesData } = this.state;
+    let paths = [];
+    if (recipesData) {
+      for (let r of recipesData) {
+        console.log('r: ', r);
+        console.log('r.attachment: ', r.attachment);
+        if (r.attachment.length > 0) {
+          try {
+            let path = await s3Path(r.attachment);
+            console.log('path: ', path);
+            paths.push(path);
+          } catch (err) {
+            console.log(err);
+          }
+        } else {
+          paths.push("");
+        }
+      }
+      this.setState({
+        recipesImgPaths: paths
+      });
+    }
+  }
+
+  renderRecipes = (recipes) => {
+    const{ recipesImgPaths } = this.state;
     return [{}].concat(recipes).map((recipe, i) =>
       i !== 0
-        ? <View key={recipe.recipeId}>
+        ?
+        <View key={recipe.recipeId}>
             <TouchableOpacity
               onPress={this.handleRecipeClick.bind(this, recipe)}
               title={recipe.title}
@@ -82,9 +115,9 @@ class Recipes extends Component {
             >
               {
                 recipe.attachment !== null
-                ? <S3Image
-                    image={recipe.attachment}
-                    imageStyle="thumbnail"
+                ? <Image
+                    source={{ uri: recipesImgPaths[i-1] }}
+                    style={recipeStyles.recipeThumb}
                   />
                 : <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.sageGreen, width: 50, height: 50, marginRight: 10, padding: 10 }}>
                     <Logo fill="#fff" />
@@ -105,8 +138,9 @@ class Recipes extends Component {
   }
 
   render() {
-    const { recipesData } = this.state;
+    const { recipesData, recipesImgPaths } = this.state;
     console.log('recipesData: ', recipesData);
+    console.log('recipesImgPaths: ', recipesImgPaths);
     const showRecipes = Object.keys(recipesData).length > 0 ? this.renderRecipes(recipesData) : null;
 
     return (

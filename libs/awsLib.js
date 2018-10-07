@@ -25,3 +25,17 @@ export async function s3Delete(file) {
     .then(result => console.log(result))
     .catch(err => console.log(err));
 }
+
+export async function s3Path(file) {
+  const fileURL = await Storage.vault.get(file)
+    .then(filePath => {
+      console.log('s3Path filePath: ', filePath);
+        return filePath;
+      } 
+    )
+    .catch(err => {
+      console.log('getImagePath error: ', err);
+    });
+  console.log('fileURL: ', fileURL);
+  return fileURL;
+}
