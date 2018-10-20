@@ -9,7 +9,6 @@ import {
   Alert,
   Image,
   Platform,
-  ListView,
 } from 'react-native';
 
 import { API, Storage } from 'aws-amplify';
@@ -17,6 +16,7 @@ import { API, Storage } from 'aws-amplify';
 import { ImagePicker, Permissions, FileSystem, LinearGradient } from 'expo';
 
 import AllIngredients from '../components/AllIngredients';
+import AddIngredient from '../components/AddIngredient';
 
 import { s3Upload, s3Delete } from '../libs/awsLib';
 
@@ -447,23 +447,12 @@ class Recipe extends Component {
   render() {
     const {
       ingredients,
-      // instructions,
-      // attachment,
-      // attachmentURL,
-      // newAttachment,
       editMode
     } = this.state;
-    // const recipeImage = this.recipeImage();
-    const recipeHeader = this.recipeHeader();
-    // const ingredients = this.state.ingredients ? this.ingredients() : null;
-    const instructions = this.instructions();
-    const editToggleButton = this.editToggleButton();
+    const recipeHeader = this.recipeHeader(),
+          instructions = this.instructions(),
+          editToggleButton = this.editToggleButton();
     console.log('this.state.ingredients: ', ingredients);
-    // console.log('attachment: ', this.state.attachment, typeof this.state.attachment);
-    // console.log('attachmentURL: ', this.state.attachmentURL, typeof this.state.attachmentURL);
-    // console.log('isUpdating: ', this.state.isUpdating);
-    // console.log('isDeleting: ', this.state.isDeleting);
-    // console.log('newAttachment: ', this.state.newAttachment, typeof this.state.newAttachment);
 
     return (
       <ScrollView>
@@ -488,13 +477,9 @@ class Recipe extends Component {
                 {
                   editMode
                   ?
-                  <TouchableOpacity
-                    onPress={() => this.addIngredient()}
-                    title="Add Ingredient"
-                    style={{ alignSelf: 'flex-start', paddingBottom: 10 }}
-                  >
-                    <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Ingredient</Text>
-                  </TouchableOpacity>
+                  <AddIngredient
+                    handleOnPress={() => this.addIngredient()}
+                  />
                   :
                   null
                 }
@@ -509,7 +494,6 @@ class Recipe extends Component {
                   accessibilityLabel="Delete Recipe"
                 >
                   <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={35} color={Colors.sageGreen} />
-                  {/* <Text style={{ color: 'white' }}> Delete</Text> */}
                 </TouchableOpacity>
               </View>
             </View>

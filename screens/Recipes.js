@@ -14,7 +14,6 @@ import { API } from "aws-amplify";
 
 import { s3Path } from '../libs/awsLib';
 
-// import S3Image from '../components/S3Image';
 import Logo from '../components/icons/Logo';
 
 import globalStyles from '../styles/GlobalStyles';
@@ -125,7 +124,6 @@ class Recipes extends Component {
               }
               <View style={recipeStyles.recipeListingContent}>
                 <Text style={[globalStyles.heading, { marginBottom: 0 }]}>{recipe.title}</Text>
-                {/* <Text style={globalStyles.smallText}>{new Date(recipe.createdAt).toLocaleDateString()}</Text> */}
               </View>
             </TouchableOpacity>
           </View>

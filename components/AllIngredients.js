@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TextInput,
-} from 'react-native';
+import { View } from 'react-native';
 
 import SingleIngredient from './SingleIngredient';
 

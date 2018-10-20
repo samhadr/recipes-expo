@@ -5,9 +5,7 @@ import {
   TouchableOpacity,
   View,
   TextInput,
-  CameraRoll,
   Button,
-  ScrollView,
   Image,
   Platform
 } from 'react-native';
@@ -19,8 +17,7 @@ import config from '../config';
 import { s3Upload } from '../libs/awsLib';
 
 import AllIngredients from '../components/AllIngredients';
-
-import Colors from '../constants/Colors';
+import AddIngredient from '../components/AddIngredient';
 
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
@@ -187,13 +184,9 @@ class CreateRecipe extends Component {
             onIngredientsChange={this.handleIngredientsChange}
             onIngredientDelete={this.ingredientDelete}
           />
-          <TouchableOpacity
-            onPress={() => this.addIngredient()}
-            title="Add Ingredient"
-            style={{ alignSelf: 'flex-start', paddingBottom: 10 }}
-          >
-            <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Ingredient</Text>
-          </TouchableOpacity>
+          <AddIngredient
+            handleOnPress={() => this.addIngredient()}
+          />
           <TextInput
             style={formStyles.textInput}
             multiline
@@ -215,7 +208,6 @@ class CreateRecipe extends Component {
             : null
           }
           <Button title="Load Images" onPress={this.handleImageButton} />
-          {/* {this.state.showSignInError ? <Text style={globalStyles.error}>Incorrect username or password</Text> : null} */}
           <TouchableOpacity
             type="submit"
             style={formStyles.button}
