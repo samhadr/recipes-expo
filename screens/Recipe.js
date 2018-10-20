@@ -381,7 +381,7 @@ class Recipe extends Component {
     });
   }
 
-  handleIngredientDelete = (i) => {
+  ingredientDelete = (i) => {
     console.log('handleIngredientsChange: ', i);
     const { ingredients } = this.state;
     const updatedIngredients = new Array(ingredients);
@@ -480,7 +480,7 @@ class Recipe extends Component {
                     ingredients={ingredients}
                     editMode={editMode}
                     onIngredientsChange={this.handleIngredientsChange}
-                    onIngredientDelete={this.handleIngredientDelete}
+                    onIngredientDelete={this.ingredientDelete}
                   />
                   :
                   null

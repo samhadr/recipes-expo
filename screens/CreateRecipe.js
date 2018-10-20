@@ -18,6 +18,10 @@ import { API } from 'aws-amplify';
 import config from '../config';
 import { s3Upload } from '../libs/awsLib';
 
+import AllIngredients from '../components/AllIngredients';
+
+import Colors from '../constants/Colors';
+
 import globalStyles from '../styles/GlobalStyles';
 import formStyles from '../styles/FormStyles';
 
@@ -38,7 +42,7 @@ class CreateRecipe extends Component {
     this.state = {
       isLoading: true,
       title: '',
-      ingredients: '',
+      ingredients: [],
       instructions: '',
       isCreating: false,
       showPhotos: false,
@@ -124,8 +128,45 @@ class CreateRecipe extends Component {
     });
   }
 
+  addIngredient = () => {
+    const { ingredients } = this.state;
+    const newIngredient = { name: null, amount: null, unit: null}
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0].push(newIngredient);
+    console.log('updatedIngredients: ', updatedIngredients);
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
+  }
+
+  handleIngredientsChange = (i, key, value) => {
+    const { ingredients } = this.state;
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0][i][key] = value;
+    console.log('updatedIngredients: ', updatedIngredients);
+
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
+  }
+
+  ingredientDelete = (i) => {
+    console.log('handleIngredientsChange: ', i);
+    const { ingredients } = this.state;
+    const updatedIngredients = new Array(ingredients);
+
+    updatedIngredients[0].splice(i, 1);
+    console.log('updatedIngredients: ', updatedIngredients);
+
+    this.setState({
+      ingredients: updatedIngredients[0]
+    });
+  }
+
   render() {
-    const { imageObject, image } = this.state;
+    const { imageObject, image, ingredients } = this.state;
     console.log('imageObject: ', imageObject);
     console.log('image: ', image);
 
@@ -140,13 +181,19 @@ class CreateRecipe extends Component {
             underlineColorAndroid="transparent"
             autoFocus={true}
           />
-          <TextInput
-            style={formStyles.textInput}
-            value={this.state.ingredients}
-            onChangeText={value => this.onChangeText('ingredients', value)}
-            placeholder="Add Ingredient"
-            underlineColorAndroid="transparent"
+          <AllIngredients
+            ingredients={ingredients}
+            editMode={true}
+            onIngredientsChange={this.handleIngredientsChange}
+            onIngredientDelete={this.ingredientDelete}
           />
+          <TouchableOpacity
+            onPress={() => this.addIngredient()}
+            title="Add Ingredient"
+            style={{ alignSelf: 'flex-start', paddingBottom: 10 }}
+          >
+            <Text style={{ fontWeight: 'bold', color: Colors.sageGreen }}>{"\uFF0B"} Add Ingredient</Text>
+          </TouchableOpacity>
           <TextInput
             style={formStyles.textInput}
             multiline
