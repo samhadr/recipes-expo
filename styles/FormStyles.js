@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 3,
   },
+  textEditHeader: {
+    backgroundColor: '#fff',
+  },
   inputHelper: {
     marginTop: -10,
     marginBottom: 15,

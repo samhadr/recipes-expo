@@ -51,9 +51,10 @@ class SingleIngredient extends Component {
     });
   }
 
-  handleChange = (i, key, value) => {
-    console.log('handleChange: ', (i, key, value));
-    this.props.onIngredientChange(i, key, value);
+  handleChange = (i) => {
+    const { name, amount, unit } = this.state;
+    console.log('handleChange: ', (i));
+    this.props.onIngredientChange(i, name, amount, unit);
   }
 
   handleDelete = (i) => {
@@ -64,34 +65,44 @@ class SingleIngredient extends Component {
   renderSingleIngredient = () => {
     const { index, editMode } = this.props;
     const { name, amount, unit } = this.state;
+    console.log('single state: ', this.state);
 
     if (editMode) {
       return (
         <View style={{ flexDirection: 'row' }}>
           <TextInput
-            style={[formStyles.textInput, formStyles.textEdit]}
+            style={[formStyles.textInput, formStyles.textEdit, { flex: 1 }]}
             value={amount}
             onChangeText={value => this.onChangeText('amount', value)}
-            onEndEditing={() => this.handleChange(index, 'amount', amount)}
+            // onBlur={() => this.handleChange(index, 'amount', amount)}
             placeholder={amount ? amount : 'amount'}
             underlineColorAndroid="transparent"
           />
           <TextInput
-            style={[formStyles.textInput, formStyles.textEdit]}
+            style={[formStyles.textInput, formStyles.textEdit, { flex: 3 }]}
             value={unit}
             onChangeText={value => this.onChangeText('unit', value)}
-            onEndEditing={() => this.handleChange(index, 'unit', unit)}
+            // onBlur={() => this.handleChange(index, 'unit', unit)}
             placeholder={unit ? unit : 'unit'}
             underlineColorAndroid="transparent"
           />
           <TextInput
-            style={[formStyles.textInput, formStyles.textEdit]}
+            style={[formStyles.textInput, formStyles.textEdit, { flex: 8 }]}
             value={name}
             onChangeText={value => this.onChangeText('name', value)}
-            onEndEditing={() => this.handleChange(index, 'name', name)}
+            // onBlur={() => this.handleChange(index, 'name', name)}
             placeholder={name ? name : 'name'}
             underlineColorAndroid="transparent"
           />
+          <TouchableOpacity
+            type="submit"
+            style={recipeStyles.actionButton}
+            onPress={() => this.handleChange(index)}
+            title="Save Ingredient"
+            accessibilityLabel="Save Ingredient"
+          >
+            <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={Colors.sageGreen} />
+          </TouchableOpacity>
           <TouchableOpacity
             type="submit"
             style={recipeStyles.actionButton}

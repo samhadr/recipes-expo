@@ -14,9 +14,9 @@ class AllIngredients extends Component {
     super(props);
   }
 
-  handleIngredientChange = (i, key, value) => {
-    console.log('handleIngredientChange: ', (i, key, value));
-    this.props.onIngredientsChange(i, key, value);
+  handleIngredientChange = (i, name, amount, unit) => {
+    console.log('handleIngredientChange: ', (i, name, amount, unit));
+    this.props.onIngredientsChange(i, name, amount, unit);
   }
 
   handleIngredientDelete = (i) => {

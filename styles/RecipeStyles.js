@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   recipeHeaderContentEdit: {
-    position: 'relative',
+    // position: 'relative',
   },
   recipeHeaderCopy: {
     flex: 8,
@@ -55,11 +55,15 @@ const styles = StyleSheet.create({
     flex: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 6,
+    position: 'absolute',
+    top: 6,
+    width: window.width,
+    // marginTop: 6,
   },
   recipeHeaderButton: {
     flexDirection: 'row',
-    // marginLeft: 10,
+    marginRight: 5,
+    marginLeft: 5,
   },
   ingredients: {
     flex: 10,

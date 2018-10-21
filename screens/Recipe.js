@@ -94,7 +94,7 @@ class Recipe extends Component {
     const updatedIngredients = new Array(ingredients);
     
     updatedIngredients[0].map((item, index) => {
-      if (item.name === null || item.name.length === 0) {
+      if (item.length === 0) {
         ingredients.splice(index, 1);
       }
     });
@@ -265,6 +265,24 @@ class Recipe extends Component {
               source={{ uri: attachmentURL }}
               resizeMode={'cover'}
             />
+            <View style={recipeStyles.recipeHeaderButtons}>
+              <TouchableOpacity
+                onPress={this.confirmDeleteImage}
+                title="Delete image"
+                style={recipeStyles.recipeHeaderButton}
+              >
+                <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={15} color={'white'} />
+                <Text style={{ color: 'white' }}> Delete image</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={this.handleImageButton}
+                title="Change image"
+                style={recipeStyles.recipeHeaderButton}
+              >
+                <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={15} color={'white'} />
+                <Text style={{ color: 'white' }}> Change image</Text>
+              </TouchableOpacity>
+            </View>
             <View style={{ width: '100%' }}>
               <LinearGradient
                 colors={['transparent', '#000']}
@@ -272,24 +290,7 @@ class Recipe extends Component {
                 end={[0, 1]}
                 style={[recipeStyles.recipeHeaderContent, { paddingBottom: 10 }]}
               >
-                <View style={recipeStyles.recipeHeaderButtons}>
-                  <TouchableOpacity
-                    onPress={this.confirmDeleteImage}
-                    title="Delete image"
-                    style={recipeStyles.recipeHeaderButton}
-                  >
-                    <Ionicons name={Platform.OS === 'ios' ? `ios-trash` : 'md-trash'} size={15} color={'white'} />
-                    <Text style={{ color: 'white' }}> Delete image</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={this.handleImageButton}
-                    title="Change image"
-                    style={recipeStyles.recipeHeaderButton}
-                  >
-                    <Ionicons name={Platform.OS === 'ios' ? `ios-create` : 'md-create'} size={15} color={'white'} />
-                    <Text style={{ color: 'white' }}> Change image</Text>
-                  </TouchableOpacity>
-                </View>
+                
               </LinearGradient>
             </View>
           </View>
@@ -328,7 +329,7 @@ class Recipe extends Component {
           </View>
           <View style={[recipeStyles.recipeHeaderContent, recipeStyles.recipeHeaderContentEdit]}>
             <TextInput
-              style={[formStyles.textInput, formStyles.textEdit, {maxWidth: 300}]}
+              style={[formStyles.textInput, formStyles.textEdit, formStyles.textEditHeader, {maxWidth: 300}]}
               value={title}
               onChangeText={value => this.onChangeText('title', value)}
               placeholder={title}
@@ -369,11 +370,14 @@ class Recipe extends Component {
     });
   }
 
-  handleIngredientsChange = (i, key, value) => {
+  handleIngredientsChange = (i, name, amount, unit) => {
+    console.log('handleIngredientsChange: ', (i, name, amount, unit));
     const { ingredients } = this.state;
     const updatedIngredients = new Array(ingredients);
 
-    updatedIngredients[0][i][key] = value;
+    updatedIngredients[0][i].name = name;
+    updatedIngredients[0][i].amount = amount;
+    updatedIngredients[0][i].unit = unit;
     console.log('updatedIngredients: ', updatedIngredients);
 
     this.setState({
