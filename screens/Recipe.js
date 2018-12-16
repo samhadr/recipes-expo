@@ -57,6 +57,7 @@ class Recipe extends Component {
       newAttachment: '',
       imageObject: null,
       editMode: false,
+      canUpdate: false,
       isUpdating: false,
       isDeleting: false
     }
@@ -370,8 +371,8 @@ class Recipe extends Component {
     });
   }
 
-  handleIngredientsChange = (i, name, amount, unit) => {
-    console.log('handleIngredientsChange: ', (i, name, amount, unit));
+  handleIngredientsChange = (i, name, amount, unit, canIngredientUpdate) => {
+    console.log('handleIngredientsChange: ', (i, name, amount, unit, canIngredientUpdate));
     const { ingredients } = this.state;
     const updatedIngredients = new Array(ingredients);
 
@@ -379,9 +380,11 @@ class Recipe extends Component {
     updatedIngredients[0][i].amount = amount;
     updatedIngredients[0][i].unit = unit;
     console.log('updatedIngredients: ', updatedIngredients);
+    console.log('canIngredientUpdate: ', canIngredientUpdate);
 
     this.setState({
-      ingredients: updatedIngredients[0]
+      ingredients: updatedIngredients[0],
+      canUpdate: canIngredientUpdate
     });
   }
 
@@ -399,18 +402,19 @@ class Recipe extends Component {
   }
 
   editToggleButton = () => {
-    const { editMode } = this.state;
+    const { editMode, canUpdate } = this.state;
+    console.log('canUpdate: ', canUpdate);
     
     if (editMode) {
       return (
         <TouchableOpacity
           type="submit"
           style={recipeStyles.actionButton}
-          onPress={this.handleUpdate}
+          onPress={canUpdate ? this.handleUpdate : null}
           title="Save Changes"
           accessibilityLabel="Save Changes"
         >
-          <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={Colors.sageGreen} />
+          <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={canUpdate ? Colors.sageGreen : 'lightgrey'} />
         </TouchableOpacity>
       )
     }
@@ -451,7 +455,8 @@ class Recipe extends Component {
   render() {
     const {
       ingredients,
-      editMode
+      editMode,
+      canUpdate
     } = this.state;
     const recipeHeader = this.recipeHeader(),
           instructions = this.instructions(),
@@ -472,6 +477,7 @@ class Recipe extends Component {
                   <AllIngredients
                     ingredients={ingredients}
                     editMode={editMode}
+                    canUpdate={canUpdate}
                     onIngredientsChange={this.handleIngredientsChange}
                     onIngredientDelete={this.ingredientDelete}
                   />

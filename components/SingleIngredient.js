@@ -20,7 +20,8 @@ class SingleIngredient extends Component {
     name: PropTypes.string,
     amount: PropTypes.string,
     unit: PropTypes.string,
-    editMode: PropTypes.bool
+    editMode: PropTypes.bool,
+    canUpdate: PropTypes.bool
   }
 
   constructor(props) {
@@ -29,7 +30,8 @@ class SingleIngredient extends Component {
     this.state = {
       name: '',
       amount: '',
-      unit: ''
+      unit: '',
+      savedIngredient: false
     }
   }
 
@@ -52,9 +54,13 @@ class SingleIngredient extends Component {
   }
 
   handleChange = (i) => {
-    const { name, amount, unit } = this.state;
-    console.log('handleChange: ', (i));
-    this.props.onIngredientChange(i, name, amount, unit);
+    const { name, amount, unit, savedIngredient } = this.state;
+    // this.setState(
+    //   { savedIngredient: true },
+    //   this.props.onIngredientChange(i, name, amount, unit, savedIngredient),
+    //   console.log('handleChange: ', (i), savedIngredient)
+    //   );
+    this.props.onIngredientChange(i, name, amount, unit, true);
   }
 
   handleDelete = (i) => {
@@ -63,9 +69,10 @@ class SingleIngredient extends Component {
   }
 
   renderSingleIngredient = () => {
-    const { index, editMode } = this.props;
+    const { index, editMode, savedIngredient } = this.props;
     const { name, amount, unit } = this.state;
     console.log('single state: ', this.state);
+    console.log()
 
     if (editMode) {
       return (
@@ -74,7 +81,7 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit, { flex: 1 }]}
             value={amount}
             onChangeText={value => this.onChangeText('amount', value)}
-            // onBlur={() => this.handleChange(index, 'amount', amount)}
+            onBlur={() => this.handleChange(index, 'amount', amount)}
             placeholder={amount ? amount : 'amount'}
             underlineColorAndroid="transparent"
           />
@@ -82,7 +89,7 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit, { flex: 3 }]}
             value={unit}
             onChangeText={value => this.onChangeText('unit', value)}
-            // onBlur={() => this.handleChange(index, 'unit', unit)}
+            onBlur={() => this.handleChange(index, 'unit', unit)}
             placeholder={unit ? unit : 'unit'}
             underlineColorAndroid="transparent"
           />
@@ -90,19 +97,19 @@ class SingleIngredient extends Component {
             style={[formStyles.textInput, formStyles.textEdit, { flex: 8 }]}
             value={name}
             onChangeText={value => this.onChangeText('name', value)}
-            // onBlur={() => this.handleChange(index, 'name', name)}
+            onBlur={() => this.handleChange(index, 'name', name)}
             placeholder={name ? name : 'name'}
             underlineColorAndroid="transparent"
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             type="submit"
             style={recipeStyles.actionButton}
             onPress={() => this.handleChange(index)}
             title="Save Ingredient"
             accessibilityLabel="Save Ingredient"
           >
-            <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={Colors.sageGreen} />
-          </TouchableOpacity>
+            <Ionicons name={Platform.OS === 'ios' ? `ios-checkmark-circle` : 'md-checkmark-circle'} size={25} color={savedIngredient ? Colors.sageGreen : 'lightgrey'} />
+          </TouchableOpacity> */}
           <TouchableOpacity
             type="submit"
             style={recipeStyles.actionButton}

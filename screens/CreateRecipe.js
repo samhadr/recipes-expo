@@ -45,7 +45,8 @@ class CreateRecipe extends Component {
       showPhotos: false,
       photos: [],
       imageObject: null,
-      image: ''
+      image: '',
+      canUpdate: false
     }
   }
 
@@ -163,7 +164,7 @@ class CreateRecipe extends Component {
   }
 
   render() {
-    const { imageObject, image, ingredients } = this.state;
+    const { imageObject, image, ingredients, canUpdate } = this.state;
     console.log('imageObject: ', imageObject);
     console.log('image: ', image);
 
@@ -181,6 +182,7 @@ class CreateRecipe extends Component {
           <AllIngredients
             ingredients={ingredients}
             editMode={true}
+            canUpdate={true}
             onIngredientsChange={this.handleIngredientsChange}
             onIngredientDelete={this.ingredientDelete}
           />
